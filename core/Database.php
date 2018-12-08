@@ -8,6 +8,7 @@
 
 namespace Core;
 
+use mysql_xdevapi\Exception;
 use PDO;
 
 /**
@@ -26,32 +27,61 @@ use PDO;
 class Database
 {
     private static $instance = null;
-    private $db;
+    private $pdo;
 
     private function __construct($data)
     {
+        $this->pdo = $this->pdoConnect($data);
+    }
+
+    public static function getInstance($data) {
+        if(is_null(self::$instance)) {
+            self::$instance = new Database($data);
+        }
+        return self::$instance;
+    }
+
+    /**
+     * @return PDO
+     */
+    public function pdo()
+    {
+        return $this->pdo;
+    }
+
+
+    public function query($statement) {
+        return $this->pdo->query($statement);
+    }
+
+    public function pdoConnect($data) {
+        // Checks of if the DSN is defined in $data.
+        // If its not, builds it from the driver, host and dbname informations.
         if(array_key_exists('driver', $data)
             && array_key_exists('host', $data)
             && array_key_exists('dbname', $data))
         {
-            $data['dsn'] = $data['driver'] . ":host=" . $data['host']  . ";dbname=" . $data['dbname'] . ";";
+            $data['dsn'] = $data['driver'] . ":host=" . $data['host']  . ";dbname=" . $data['dbname'] . ";charset=" . $data['charset'].";";
             unset($data['driver']);
             unset($data['host']);
             unset($data['dbname']);
         }
 
+
+        // Checks if the DSN, the username and the password are defined.
+        // The, establishes a connection to the Database
         if(array_key_exists('dsn', $data)
             && array_key_exists('username', $data)
             && array_key_exists('password', $data))
         {
-            $this->db = new \PDO($data['dsn'], $data['username'], $data['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            try {
+                $pdo = new PDO($data['dsn'], $data['username'], $data['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+                echo 'OK !';
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
         }
-    }
 
-    public static function getInstance($data) {
-        if(self::$instance) {
-            self::$instance = new Database($data);
-        }
-        return self::$instance;
+        return $pdo;
     }
 }
