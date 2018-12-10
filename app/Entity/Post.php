@@ -6,8 +6,8 @@
  * Time: 10:35
  */
 
-namespace App\Entity;
-use Core\Entity;
+namespace Blog\app\Entity;
+use Blog\core\Entity;
 
 
 class Post extends Entity
@@ -180,4 +180,8 @@ class Post extends Entity
     }
 
 
+
+    public function toArray() {
+        return get_object_vars($this);
+    }
 }

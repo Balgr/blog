@@ -6,8 +6,8 @@
  * Time: 11:02
  */
 
-namespace App\Entity;
-use Core\Entity;
+namespace Blog\app\Entity;
+use Blog\core\Entity;
 
 class Comment extends Entity
 {
@@ -101,6 +101,10 @@ class Comment extends Entity
     public function setPostId($postId)
     {
         $this->postId = $postId;
+    }
+
+    public function toArray() {
+        return get_object_vars($this);
     }
 
 }

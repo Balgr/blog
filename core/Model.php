@@ -6,17 +6,20 @@
  * Time: 23:44
  */
 
-namespace Core;
+namespace Blog\core;
 
 abstract class Model
 {
-    private $db;
-    private $tableName;
+    protected $db;
+    protected $tableName;
+    protected $entityClass;
+    protected $limit;
 
     /* Constantes d'exceptions */
 
     public function __construct($db)
     {
+        // Connect to the database
         $this->db = $db;
         try {
             $this->db->query('SELECT 1');
@@ -24,7 +27,15 @@ abstract class Model
         } catch (\PDOException $e) {
             die($e->getMessage());
         }
-        $this->setTableName();
+
+        /**
+         * Sets the name of the Entity to the corresponding attribute,
+         * then saves the name of the table we are currently working on.
+         */
+        $this->setEntityClass();
+        $this->tableName = str_replace("model", "", strtolower($this->entityClass).'s');
+        echo $this->entityClass;
+        $this->limit = Config::getConfigFromYAML(__DIR__ . "/../config/database/entities.yml")[$this->entityClass]['indexLimit'];
     }
 
     /**
@@ -38,12 +49,9 @@ abstract class Model
         $columnsInsert = implode(", ", array_keys($data));
         $rowInsert = "'". implode("', '", array_values($data)) ."'";
 
-        // FOR TESTING PURPOSES
-        var_dump($columnsInsert);
-        var_dump($rowInsert);
-
         $req = "INSERT INTO " . $this->tableName . " (".$columnsInsert .") " . " VALUES (".$rowInsert.")";
 
+        //echo "<br>" . $req;
         return $this->db->query($req);
     }
 
@@ -68,7 +76,6 @@ abstract class Model
         $req = "UPDATE ". $this->tableName . " SET " . $values . "WHERE id=" . $data['id'];
 
         return $this->db->query($req);
-
     }
 
     /**
@@ -85,14 +92,19 @@ abstract class Model
     }
 
     /**
+     * @param int $limit
      * @return mixed
      * Returns the list of ALL rows in the $this->tableName table.
      */
-    public function getAll() {
-        $req = "SELECT * FROM " . $this->tableName;
+    public function getAll($limit = -1) {
+        if($limit < 0) {
+            $limit = $this->limit;
+        }
+        $req = "SELECT * FROM " . $this->tableName . ' LIMIT ' . $limit;
+        echo "<br><br><br>" . $req . "<br><br><br>";
         $data = $this->db->query($req);
 
-        return $data->fetchAll(\PDO::FETCH_CLASS);;
+        return $data->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -103,31 +115,50 @@ abstract class Model
     public function getSingle($id) {
         if(is_integer($id)) {
             $req = "SELECT * FROM " . $this->tableName . " WHERE id=" . (int) $id;
-            echo $req;
+
             $data = $this->db->query($req);
-            return $data->fetch(\PDO::FETCH_ASSOC);
+            $data->setFetchMode(\PDO::FETCH_ASSOC);
+
+            return $data->fetch();
         }
     }
 
     /**
      * @return mixed
      */
-    public function getTableName()
+    public function tableName()
     {
         return $this->tableName;
     }
 
     /**
+     * @param $tableName
      * @return mixed
      *
-     * @throws \ReflectionException
      * Sets the table name to the short
      */
-    public function setTableName()
+    public function setTableName($tableName)
     {
-        $class = new \ReflectionClass($this);
-        $class = $class->getShortName();
-        $this->tableName = strtolower(str_replace('Model', '', $class)) . 's';
-        //echo $this->tableName;
+        $this->tableName = $tableName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function entityClass()
+    {
+        return $this->entityClass;
+    }
+
+    /**
+     * @param mixed $class
+     */
+    public function setEntityClass()
+    {
+        $this->entityClass = new \ReflectionClass($this);
+        $this->entityClass = $this->entityClass->getShortName();
+        //$this->entityClass = "Blog\app\Model\\" . $this->entityClass;
+        //str_replace('Model', '', $this->entityClass);
+        return $this->entityClass;
     }
 }

@@ -6,8 +6,14 @@
  * Time: 10:30
  */
 
-namespace Core;
-require_once('Hydrator.php');
+namespace Blog\core;
+require('Hydrator.php');
+
+/**
+ * Class Entity
+ * @package Core
+ * TODO : The Entity must contain a method that transforms it to an array instead of doing it in each Entity child.
+ */
 
 abstract class Entity
 {

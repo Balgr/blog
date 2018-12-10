@@ -6,8 +6,8 @@
  * Time: 16:51
  */
 
-namespace App\Helper;
-use Core\EntityHelper;
+namespace Blog\p\Helper;
+use Blog\core\EntityHelper;
 
 class CommentEntityHelper extends EntityHelper
 {

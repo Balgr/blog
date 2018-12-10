@@ -6,7 +6,7 @@
  * Time: 16:28
  */
 
-namespace Core;
+namespace Blog\core;
 
 use mysql_xdevapi\Exception;
 use PDO;

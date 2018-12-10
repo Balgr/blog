@@ -6,11 +6,13 @@
  * Time: 16:50
  */
 
-namespace App\Model;
-use Core\Model;
+namespace Blog\app\Model;
+use Blog\core\Config;
+use Blog\core\Model;
 
 
 class CommentModel extends Model
 {
+    
 
 }

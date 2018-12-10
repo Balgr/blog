@@ -6,11 +6,12 @@
  * Time: 01:24
  */
 
-namespace App\Model;
-use Core\Model;
+namespace Blog\app\Model;
+use Blog\core\Config;
+use Blog\core\Model;
 
 
 class PostModel extends Model
 {
-    
+
 }

@@ -6,8 +6,8 @@
  * Time: 11:29
  */
 
-namespace App\Entity;
-use Core\Entity;
+namespace Blog\app\Entity;
+use Blog\core\Entity;
 
 class User extends Entity
 {
@@ -81,7 +81,7 @@ class User extends Entity
     /**
      * @param mixed $dateInscription
      */
-    public function setDateInscription(\DateTime $dateInscription)
+    public function setDateInscription($dateInscription)
     {
         $this->dateInscription = $dateInscription;
     }
@@ -102,4 +102,8 @@ class User extends Entity
         $this->category = $category;
     }
 
+
+    public function toArray() {
+        return get_object_vars($this);
+    }
 }

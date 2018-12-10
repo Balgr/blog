@@ -6,7 +6,7 @@
  * Time: 12:34
  */
 
-namespace Core;
+namespace Blog\core;
 
 use Symfony\Component\Yaml\Yaml;
 
@@ -23,6 +23,4 @@ abstract class Config
     public static function getConfigFromYAML($filename) {
         return Yaml::parseFile((string) $filename);
     }
-
-    // TODO : getConfigFromXML($filename);
 }

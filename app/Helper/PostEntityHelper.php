@@ -6,8 +6,8 @@
  * Time: 11:55
  */
 
-namespace App\Helper;
-use Core\EntityHelper;
+namespace Blog\app\Helper;
+use Blog\core\EntityHelper;
 
 class PostEntityHelper extends EntityHelper
 {
