@@ -17,6 +17,9 @@ class User extends Entity
     private $dateInscription;
     private $category;
 
+    const STATUS_ADMIN = 0;
+    const STATUS_MEMBER = 1;
+
     public function isValid()
     {
         return ! empty($this->nickname) || empty($this->password) || empty($this->email) || empty($this->category);

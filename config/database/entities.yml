@@ -1,0 +1,8 @@
+Post:
+  indexLimit: 10
+
+User:
+  indexLimit: 10
+
+Comment:
+  indexLimit: 5
