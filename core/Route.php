@@ -28,7 +28,6 @@ class Route {
         $this->url = $url;
         //Replace param (eg. "id") by everything but "/" to extract param
         $path = preg_replace_callback('#:([\w]+)#', [$this, 'paramMatch'], $this->path);
-        // $path = str_replace('/', '\/', $path);
         $regex = "#^".$path."$#i";
         if (!preg_match($regex, $url, $matches)) {
             return false;
