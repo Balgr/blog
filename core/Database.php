@@ -76,7 +76,6 @@ class Database
         {
             try {
                 $pdo = new PDO($data['dsn'], $data['username'], $data['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-                echo 'OK !';
             } catch (Exception $e) {
                 die($e->getMessage());
             }

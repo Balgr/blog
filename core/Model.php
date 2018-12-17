@@ -15,27 +15,42 @@ abstract class Model
     protected $entityClass;
     protected $limit;
 
-    /* Constantes d'exceptions */
+    /* Class constants*/
+    const NO_LIMIT = -1;
 
-    public function __construct($db)
+    public function __construct(Database $db)
     {
         // Connect to the database
         $this->db = $db;
         try {
             $this->db->query('SELECT 1');
-            echo "OK :) ";
         } catch (\PDOException $e) {
             die($e->getMessage());
         }
 
         /**
          * Sets the name of the Entity to the corresponding attribute,
-         * then saves the name of the table we are currently working on.
+         * then sets the name of the table we are currently working on.
          */
         $this->setEntityClass();
-        $this->tableName = str_replace("model", "", strtolower($this->entityClass).'s');
-        echo $this->entityClass;
+        $this->tableName = strtolower($this->entityClass) .'s';
         $this->limit = Config::getConfigFromYAML(__DIR__ . "/../config/database/entities.yml")[$this->entityClass]['indexLimit'];
+    }
+
+    public function getSingle ($id) {
+        $req = "SELECT * FROM " . $this->tableName . " WHERE id=?";
+        $req = $this->db->pdo()->prepare($req);
+        $req->execute(array($id));
+        return $req->fetch();
+    }
+
+    public function getAll ($limit = -1) {
+        if($limit = -1) {
+            $limit = $this->limit;
+        }
+        $req = "SELECT * FROM " . $this->tableName . " LIMIT " .$limit;
+        $data = $this->db->pdo()->query($req);
+        return $data->fetchAll();
     }
 
     /**
@@ -43,16 +58,24 @@ abstract class Model
      * @return mixed
      * Creates a new row in the $this->tableName table, with the provided $data.
      * $data must contain the table columns names as its keys, and the required values as values.
+     * $data is passed through PDO::prepare(), so that it escapes chars.
      */
     public function create($data) {
-        // Creates the list of rows and columns to add in the query (format : id, author_name, ...)
+        // If a password must be inserted...
+        if(array_key_exists('password',$data)) {
+            $data['password'] = md5($data['password']);
+        }
+        // Creates the list of rows and columns to build the query (format : id, author_name, ...)
         $columnsInsert = implode(", ", array_keys($data));
-        $rowInsert = "'". implode("', '", array_values($data)) ."'";
+        $preparedString = rtrim(str_repeat('?,', count($data)), ',');
 
-        $req = "INSERT INTO " . $this->tableName . " (".$columnsInsert .") " . " VALUES (".$rowInsert.")";
+        $req = "INSERT INTO " . $this->tableName . " (".$columnsInsert .") " . " VALUES (".$preparedString.")";
+        // Insert the row
+        $req = $this->db->pdo()->prepare($req);
+        $req->execute(array_values($data));
 
-        //echo "<br>" . $req;
-        return $this->db->query($req);
+        // Returns the last inserted row id
+        return $this->db->pdo()->lastInsertId();
     }
 
     /**
@@ -63,19 +86,26 @@ abstract class Model
      * $id will allow the function to update the correct row and MUST contain an 'id' key.
      */
     public function update($data) {
-        // Creates the list of rows and columns to add in the query (format : id = value, author_name = value, ...)
-        $values = '';
+        // Retrieves the object id
+        $id = $data['id'];
+        unset($data['id']);
+
+        // Builds the query string
+        $preparedData = '';
         foreach($data as $key => $val) {
-            $values .= $key . '="' . $val . '", ';
+            $preparedData .= $key . '= ?, ';
+            $values[] = $val;
         }
+        $preparedData = rtrim($preparedData, ', ');
+        $req = "UPDATE ". $this->tableName . " SET " . $preparedData . " WHERE id=" . $id . ' ';
 
-        // Delete the final ', ' that would cause an error in SQL.
-        $values = substr($values, 0, strlen($values)-2);
 
+        // Updates the selected row
+        $req = $this->db->pdo()->prepare($req);
+        $req->execute(array_values($data));
 
-        $req = "UPDATE ". $this->tableName . " SET " . $values . "WHERE id=" . $data['id'];
-
-        return $this->db->query($req);
+        // Returns the selected row id
+        return $id;
     }
 
     /**
@@ -92,57 +122,6 @@ abstract class Model
     }
 
     /**
-     * @param int $limit
-     * @return mixed
-     * Returns the list of ALL rows in the $this->tableName table.
-     */
-    public function getAll($limit = -1) {
-        if($limit < 0) {
-            $limit = $this->limit;
-        }
-        $req = "SELECT * FROM " . $this->tableName . ' LIMIT ' . $limit;
-        echo "<br><br><br>" . $req . "<br><br><br>";
-        $data = $this->db->query($req);
-
-        return $data->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     * Gets a single element from the table $this->tableName, with the required $id.
-     */
-    public function getSingle($id) {
-        if(is_integer($id)) {
-            $req = "SELECT * FROM " . $this->tableName . " WHERE id=" . (int) $id;
-
-            $data = $this->db->query($req);
-            $data->setFetchMode(\PDO::FETCH_ASSOC);
-
-            return $data->fetch();
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function tableName()
-    {
-        return $this->tableName;
-    }
-
-    /**
-     * @param $tableName
-     * @return mixed
-     *
-     * Sets the table name to the short
-     */
-    public function setTableName($tableName)
-    {
-        $this->tableName = $tableName;
-    }
-
-    /**
      * @return mixed
      */
     public function entityClass()
@@ -151,14 +130,14 @@ abstract class Model
     }
 
     /**
-     * @param mixed $class
+     * @param mixed $entityClass
+     * @return string
+     * @throws \ReflectionException
      */
     public function setEntityClass()
     {
-        $this->entityClass = new \ReflectionClass($this);
-        $this->entityClass = $this->entityClass->getShortName();
-        //$this->entityClass = "Blog\app\Model\\" . $this->entityClass;
-        //str_replace('Model', '', $this->entityClass);
+        $entity = new \ReflectionClass($this);
+        $this->entityClass = str_replace("Model", "", $entity->getShortName());
         return $this->entityClass;
     }
 }

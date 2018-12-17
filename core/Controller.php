@@ -1,0 +1,112 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: mehdi
+ * Date: 08/12/2018
+ * Time: 18:47
+ */
+
+namespace Blog\core;
+
+/**
+ * Class Controller
+ * @package Core
+ *
+ */
+
+abstract class Controller
+{
+    protected $twig;
+    protected $loader;
+    protected $model;
+    protected $entity;
+    protected $listObj;
+    protected $currentObj;
+    protected $templatesPath;
+    protected $limit;
+
+
+    public function __construct()
+    {
+        $this->entity = str_replace("Controller", "", get_class($this));
+        $this->entity = str_replace("Blog\app\\\\", "", $this->entity);
+
+        $this->instantiateTwig();
+        $this->limit = Config::getConfigFromYAML(__DIR__ . "/../config/database/entities.yml")[$this->entity]['indexLimit'];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function listObj()
+    {
+        return $this->listObj;
+    }
+
+    /**
+     * @param mixed $listObj
+     */
+    public function setListObj($listObj)
+    {
+        $this->listObj = $listObj;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function currentObj()
+    {
+        return $this->currentObj;
+    }
+
+    /**
+     * @param mixed $currentObj
+     */
+    public function setCurrentObj($currentObj)
+    {
+        $this->currentObj = $currentObj;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function templatesPath()
+    {
+        return $this->templatesPath;
+    }
+
+    /**
+     * @param mixed $templatesPath
+     */
+    public function setTemplatesPath($templatesPath)
+    {
+        $this->templatesPath = $templatesPath;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function model()
+    {
+        return $this->model;
+    }
+
+    /**
+     * @param mixed $model
+     */
+    protected function setModel($model)
+    {
+        $this->model = $model;
+    }
+
+    private function instantiateTwig()
+    {
+        $this->setTemplatesPath(dirname(__DIR__). Config::getConfigFromYAML(dirname(__DIR__). '/config/twig.yml')['base_path']);
+        $this->loader = new \Twig_Loader_Filesystem($this->templatesPath());
+        $this->twig = new \Twig_Environment($this->loader, array('debug' => true));
+    }
+
+
+
+
+}

@@ -30,9 +30,9 @@ class Post extends Entity
 
     public function isValid()
     {
-        $validEdition = $this->isNew() ? !empty($this->lastEditDate) || !empty($this->lastEditReason) : true;
+        $validEdition = !$this->isNew() ? !empty($this->lastEditDate) || !empty($this->lastEditReason) : true;
 
-        return ! $validEdition || empty($this->title) || empty($this->subtitle) || empty($this->content) || empty($this->creationDate) || empty($this->status) || empty($this->creatorId);
+        return !$validEdition || !empty($this->title) || !empty($this->subtitle) || !empty($this->content) || !empty($this->creationDate) || !empty($this->status) || !empty($this->creatorId);
     }
 
     /**
