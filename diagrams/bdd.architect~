@@ -46,7 +46,7 @@
     <folder id="FOLTAB12" populated="true" name="Imported Keys" physicalName="Imported Keys" type="2">
     </folder>
     <folder id="FOLTAB14" populated="true" name="Indices" physicalName="Indices" type="4">
-    <index id="IDX8" populated="true" UUID="8cdc775f-b597-4e49-bd60-5f07d9fa448e" clustered="false" name="users_pk" physicalName="users_pk" primaryKeyIndex="true" unique="false" >
+    <index id="IDX8" populated="true" UUID="8cdc775f-b597-4e49-bd60-5f07d9fa448e" clustered="false" name="users_pk" physicalName="admins_pk" primaryKeyIndex="true" unique="false" >
      <index-column id="IDC9" populated="true" UUID="2efd058d-959c-4309-81b4-521dd38655fd" ascendingOrDescending="UNSPECIFIED" column-ref="COL2" name="id" physicalName="id" />
     </index>
    </folder>

@@ -7,8 +7,7 @@ use Blog\core\Controller;
 use Blog\app\Entity\Comment;
 use Blog\core\Config;
 use Blog\core\Database;
-use mysql_xdevapi\Exception;
-use Twig\Error\Error;
+&use Twig\Error\Error;
 /**
  * Created by PhpStorm.
  * User: mehdi
@@ -41,7 +40,7 @@ class CommentController extends Controller
             $comments[] = new Comment($comment);
         }
 
-        echo $this->twig->render("comments/index.html.twig", array("comments" => $comments));
+        echo $this->twig->render("comments/backend/index.html.twig", array("comments" => $comments));
     }
 
     public function commentsByPostAction($postId, $limit = CommentModel::NO_LIMIT) {
@@ -55,7 +54,7 @@ class CommentController extends Controller
             $comments[] = new Comment($comment);
         }
 
-        echo $this->twig->render("comments/index.html.twig", array("comments" => $comments));
+        echo $this->twig->render("comments/backend/index.html.twig", array("comments" => $comments));
     }
 
     /**
@@ -74,18 +73,18 @@ class CommentController extends Controller
 
     public function addAction($postId) {
         if(!isset($_POST) || empty($_POST)) {
-            echo $this->twig->render('comments/add.html.twig', array('postId' => $postId));
+            //echo $this->twig->render('comments/add.html.twig', array('postId' => $postId));
+            // SHOW ERROR
         }
         else {
-            var_dump($_POST);
-            // Adds the Comment data not set in the form
+            // Adds the data not set in the form (the creationDate, and the status (In Moderation))
             $comment = new Comment($_POST);
             $comment->setCreationDate(date('Y-m-d H:i'));
             $comment->setStatus(Comment::COMMENT_IN_MODERATION);
             $this->model->create($comment->toArray());
 
             // Redirects to the showAction($id)
-            header('Location: /OpenClassrooms/projet-5/blog/blog/posts/show/' . $_POST['postId']);
+            header('Location: /OpenClassrooms/projet-5/blog/blog/posts/' . $_POST['postId']);
         }
     }
 
@@ -95,45 +94,58 @@ class CommentController extends Controller
      */
     public function listInModerationAction() {
         // TODO : check if the user is an admin
-        $comments = $this->model()->getComments();
+        foreach($data = $this->model()->getComments() as $comment) {
+            $comments[] = new Comment($comment);
+        }
 
         echo $this->twig->render("comments/backend/index.html.twig", array("comments" => $comments, "title" => "Commentaires en modération"));
     }
 
 
     /**
-     * @param $id
      * Sets the Comment's status to "Published", and redirects the user to the Comment's related Post
+     * @param $id
+     * @throws \Exception
      */
     public function publishCommentAction($id) {
         // TODO : check if the user is an admin
-        $comment = new Comment($this->model()->moderateComment($id, Comment::COMMENT_PUBLISHED));
-
-        header("Location: /OpenClassrooms/projet-5/blog/blog/posts/show/" . $comment->postId());
+        if($comment = new Comment($this->model()->moderateComment($id, Comment::COMMENT_TRASH))) {
+            header("Location: /OpenClassrooms/projet-5/blog/blog/posts/show/" . $comment->postId());
+        }
+        else {
+            throw new \Exception("Commentaire : suppression impossible");
+        }
     }
 
     /**
      * @param $id
      * Sets the Comment's status to "Trash", and redirects the user to the Comment's related Post
+     * @throws \Exception
      */
     public function trashCommentAction($id) {
         // TODO : check if the user is an admin
-        $comment = new Comment($this->model()->moderateComment($id, Comment::COMMENT_TRASH));
-
-        header("Location: /OpenClassrooms/projet-5/blog/blog/posts/show/" . $comment->postId());
-    }
-
-    public function deleteCommentAction($id) {
-        // TODO : check if the user is an admin or author of the comment
-        $comment = new Comment($this->model()->getSingle($id));
-        if($this->model()->delete($id)) {
-
+        if($comment = new Comment($this->model()->moderateComment($id, Comment::COMMENT_TRASH))) {
+            header("Location: /OpenClassrooms/projet-5/blog/blog/posts/show/" . $comment->postId());
         }
         else {
             throw new \Exception("Commentaire : suppression impossible");
         }
-
-        header("Location: /OpenClassrooms/projet-5/blog/blog/posts/show/" . $comment->postId());
     }
 
+    /**
+     * Permanently deletes a comment from the database, and redirects the user to the Comment's related Post.
+     * @param $id
+     * @throws \Exception
+     */
+    public function deleteAction($id)
+    {
+        $comment = new Comment($this->model->getSingle($id));
+        $postId = $comment->postId();
+        // TODO : check if the user is an admin or author of the comment
+        if ($this->model()->delete($comment->id())) {
+            header("Location: /OpenClassrooms/projet-5/blog/blog/posts/" . $postId);
+        } else {
+            throw new \Exception("Commentaire : suppression impossible");
+        }
+    }
 }
