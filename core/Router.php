@@ -52,8 +52,8 @@ class Router {
      */
     public function run() {
         if (!isset($this->routes[$_SERVER['REQUEST_METHOD']])) {
-            //$this->throwError('404');
-            //throw new RouterException('REQUEST_METHOD does not exist');
+            $this->throwError('404');
+            throw new RouterException('REQUEST_METHOD does not exist');
         }
         $askedRoute = '';
         foreach ($this->routes[$_SERVER['REQUEST_METHOD']] as $route) {
@@ -63,8 +63,8 @@ class Router {
                 $askedRoute = $route;
             }
         }
-        //$this->throwError('404');
-        //throw new RouterException('No matching route '. $askedRoute->url);
+        $this->throwError('404');
+        throw new RouterException('No matching route '. $askedRoute->url);
     }
     /*
      * Gets route URL
@@ -72,7 +72,7 @@ class Router {
     public function url($routeName, $params = []) {
         if (!isset($this->namedRoutes[$routeName])) {
             $this->throwError('404');
-            //throw new RouterException('No matching route with this name');
+            throw new RouterException('No matching route with this name');
         }
         return $this->namedRoutes[$routeName]->getUrl($params);
     }

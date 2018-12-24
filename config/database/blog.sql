@@ -64,7 +64,7 @@ CREATE TABLE `posts` (
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `nickname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `dateInscription` date NOT NULL,
