@@ -92,11 +92,11 @@ class UserController extends Controller
             if($_SERVER['REQUEST_METHOD'] == 'GET') {
                 echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user));
             }
-            else if($_SERVER['REQUEST_METHOD'] == 'POST') {
-                // TODO : validate the data passed by the User and show errors if needed
+            if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($this->errors)) {
                 $this->editUser($_POST, $id);
                 header('Location: /backend/users/');
             }
+            echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user, "errors", $this->errors));
         }
         throw new \Exception('Utilisateur inexistant');
     }

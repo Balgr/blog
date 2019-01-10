@@ -38,7 +38,11 @@ class PostController extends Controller
         // Sets the uploaded files path
         //$this->uploadPath = __DIR__ . '/../..' . Config::getConfigFromYAML(__DIR__ . '/../../config/config.yml')['posts']['upload_path'];
         $this->uploadPath = __DIR__ . '/../../public/uploads/posts/';
-        var_dump(is_dir(__DIR__ . '/../../public/uploads/posts/'));
+        //var_dump(is_dir(__DIR__ . '/../../public/uploads/posts/'));
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->validateAndSanitizePostData();
+        }
     }
 
     /**
@@ -54,10 +58,11 @@ class PostController extends Controller
             echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath));
         }
         else {
-            // TODO : check whether the submitted data is valid
-            $data = $_POST;
-            $this->addPost($data);
-            header('Location: /backend/posts/');
+            if(empty($this->errors)) {
+                $this->addPost($_POST);
+                header('Location: /backend/posts/');
+            }
+            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath, "errors" => $this->errors));
         }
     }
     private function addPost($data) {
@@ -76,9 +81,11 @@ class PostController extends Controller
             }
         }
         else if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // TODO : check whether the submitted data is valid
-            $this->editPost($_POST, $id);
-            header('Location: /backend/posts/');
+            if(empty($this->errors)) {
+                $this->editPost($_POST, $id);
+                header('Location: /backend/posts/');
+            }
+            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath, "errors" => $this->errors));
         }
     }
 
@@ -236,5 +243,35 @@ class PostController extends Controller
     public function setCommentController($commentController)
     {
         $this->commentController = $commentController;
+    }
+
+    private function validateAndSanitizePostData()
+    {
+        if(empty($_POST['title']) OR empty($_POST['subtitle']) OR empty($_POST['content'])) {
+            $this->errors['empty'] = 'Veuillez remplir tous les champs';
+        }
+        else {
+            // Checks title
+            $_POST['title'] = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
+            if (!filter_var($_POST['title']) === false) {
+                $this->errors['email'] = 'Veuillez entrer un titre correct';
+            }
+
+            // Checks subtitle
+            $_POST['subtitle'] = htmlspecialchars($_POST['subtitle']);
+            $_POST['subtitle'] = filter_var($_POST['subtitle'], FILTER_SANITIZE_STRING);
+            if (!preg_match('/^.{5,}$', $_POST['subtitle'])) {
+                $this->errors['subtitle'] = 'Le sous-titre doit contenir plus de 5 caractères.';
+            }
+
+            // Checks content
+            $_POST['content'] = htmlspecialchars($_POST['content']);
+            $_POST['content'] = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
+            if (!preg_match('/^.{100,}$', $_POST['content']) && (strlen(trim($_POST['content'])) !== 0)) {
+                $this->errors['content'] = 'Le post doit contenir au moins 100 caractères.';
+            }
+        }
+
+        // The checks for the Image input are handled by the Upload library.
     }
 }

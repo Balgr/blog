@@ -184,7 +184,6 @@ class CommentController extends Controller
             $_POST['creationDate'] = date('Y-m-d H:i');
             $_POST['status'] = Comment::COMMENT_IN_MODERATION;
 
-            // TODO : validate and sanitize the passed data
             $this->validateAndSanitizePostData();
 
             /* data is validated and sanitize */
