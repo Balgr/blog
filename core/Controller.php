@@ -11,7 +11,6 @@ namespace Blog\core;
 /**
  * Class Controller
  * @package Core
- *
  */
 
 abstract class Controller
@@ -24,10 +23,14 @@ abstract class Controller
     protected $currentObj;
     protected $templatesPath;
     protected $limit;
+    protected $errors;
+    protected $uploadPath;
 
 
     public function __construct()
     {
+        $this->errors = array();
+
         $this->entity = str_replace("Controller", "", get_class($this));
         $this->entity = str_replace("Blog\app\\\\", "", $this->entity);
 
@@ -86,6 +89,38 @@ abstract class Controller
     /**
      * @return mixed
      */
+    public function errors()
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @param mixed $errors
+     */
+    public function setErrors($errors)
+    {
+        $this->errors = $errors;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function uploadPath()
+    {
+        return $this->uploadPath;
+    }
+
+    /**
+     * @param mixed $uploadPath
+     */
+    public function setUploadPath($uploadPath)
+    {
+        $this->uploadPath = $uploadPath;
+    }
+
+    /**
+     * @return mixed
+     */
     protected function model()
     {
         return $this->model;
@@ -101,7 +136,9 @@ abstract class Controller
 
     private function instantiateTwig()
     {
-        $this->setTemplatesPath(dirname(__DIR__). Config::getConfigFromYAML(dirname(__DIR__). '/config/twig.yml')['base_path']);
+        $this->setTemplatesPath(Config::getConfigFromYAML(dirname(__DIR__). '/config/twig.yml')['views_path']);
+        $this->setTemplatesPath(dirname(__DIR__) . $this->templatesPath);
+        
         $this->loader = new \Twig_Loader_Filesystem($this->templatesPath());
         $this->twig = new \Twig_Environment($this->loader, array('debug' => true));
     }

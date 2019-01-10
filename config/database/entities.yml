@@ -1,8 +1,8 @@
 Post:
-  indexLimit: 10
+  indexLimit: -1
 
 User:
-  indexLimit: 10
+  indexLimit: -1
 
 Comment:
-  indexLimit: 5
+  indexLimit: -1

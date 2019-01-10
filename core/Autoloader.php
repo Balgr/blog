@@ -11,7 +11,7 @@ namespace Blog\core;
 class Autoloader {
 
     public function __construct() {
-        echo 'autoloader';
+
     }
 
     /**
@@ -30,7 +30,8 @@ class Autoloader {
 
         $class = str_replace('\\', '/', $class);
         $class = substr($class, strpos($class, '/'), strlen($class)-1);
+        $dir = __DIR__;
 
-        require __DIR__ . "/.." . $class . '.php';
+        require "$dir/..$class.php";
     }
 }

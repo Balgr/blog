@@ -44,11 +44,12 @@ abstract class Model
         return $req->fetch();
     }
 
+
     public function getAll ($limit = -1) {
-        if($limit = -1) {
-            $limit = $this->limit;
+        $req = "SELECT * FROM " . $this->tableName;
+        if($limit !== -1) {
+            $req = $req . " LIMIT " .$this->limit;
         }
-        $req = "SELECT * FROM " . $this->tableName . " LIMIT " .$limit;
         $data = $this->db->pdo()->query($req);
         return $data->fetchAll();
     }
@@ -61,16 +62,13 @@ abstract class Model
      * $data is passed through PDO::prepare(), so that it escapes chars.
      */
     public function create($data) {
-        // If a password must be inserted...
-        if(array_key_exists('password',$data)) {
-            $data['password'] = md5($data['password']);
-        }
         // Creates the list of rows and columns to build the query (format : id, author_name, ...)
         $columnsInsert = implode(", ", array_keys($data));
         $preparedString = rtrim(str_repeat('?,', count($data)), ',');
 
         $req = "INSERT INTO " . $this->tableName . " (".$columnsInsert .") " . " VALUES (".$preparedString.")";
         // Insert the row
+        var_dump($req);
         $req = $this->db->pdo()->prepare($req);
         $req->execute(array_values($data));
 
@@ -89,6 +87,9 @@ abstract class Model
         // Retrieves the object id
         $id = $data['id'];
         unset($data['id']);
+        if(isset($data['password']) && empty($data['password'])) {
+            unset($data['password']);
+        }
 
         // Builds the query string
         $preparedData = '';
@@ -105,7 +106,7 @@ abstract class Model
         $req->execute(array_values($data));
 
         // Returns the selected row id
-        return $id;
+        return true;
     }
 
     /**
@@ -139,5 +140,13 @@ abstract class Model
         $entity = new \ReflectionClass($this);
         $this->entityClass = str_replace("Model", "", $entity->getShortName());
         return $this->entityClass;
+    }
+
+    /**
+     * @return Database
+     */
+    public function db()
+    {
+        return $this->db;
     }
 }

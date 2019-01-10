@@ -58,9 +58,8 @@ class Route {
             $action = $params[1];
 
             return call_user_func_array([$controller, $action], $this->matches);
-        } else {
-            return call_user_func_array($this->callable, $this->matches);
         }
+        return call_user_func_array($this->callable, $this->matches);
     }
     /*
      * Adds "with" param condition

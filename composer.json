@@ -1,6 +1,9 @@
 {
+    "name": "farem/blog",
+    "description": "Blog created from scratch for OpenClassrooms' \"PHP/Symfony App Developer\" path's 5th project.",
     "require": {
       "twig/twig": "^2.5",
-        "symfony/yaml": "^4.2"
+        "symfony/yaml": "^4.2",
+        "codeguy/upload": "^1.3"
     }
 }

@@ -59,9 +59,8 @@ class Router {
         foreach ($this->routes[$_SERVER['REQUEST_METHOD']] as $route) {
             if ($route->match($this->url)) {
                 return $route->call();
-            } else {
-                $askedRoute = $route;
             }
+            $askedRoute = $route;
         }
         $this->throwError('404');
         throw new RouterException('No matching route '. $askedRoute->url);
@@ -80,16 +79,30 @@ class Router {
      * Throws error
      */
     public function throwError($errorCode) {
-        /*$this->error = new ErrorController();
-
         switch ($errorCode) {
             case '404':
-                $this->error->notFound();
+                try {
+                    $this->notFound();
+                } catch (\Exception $e) {
+                }
                 break;
             case '403':
-                $this->error->forbidden();
+                try {
+                    $this->forbidden();
+                } catch (\Exception $e) {
+                }
                 break;
-        }*/
-        //throw new \Exception();
+        }
+    }
+
+    // TODO : Redirect to 404 or 403 page instead of throwing an Exception.
+    private function notFound()
+    {
+        throw new \Exception("404 NOT FOUND.");
+    }
+
+    private function forbidden()
+    {
+        throw new \Exception("403 Forbidden.");
     }
 }
