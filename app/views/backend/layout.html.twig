@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="/public/backend/images/favicon.ico">
+	<title>Medialoot Bootstrap 4 Dashboard Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/public/backend/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="/public/backend/css/font-awesome.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/public/backend/css/style.css" rel="stylesheet">
+    <link href="/public/backend/css/custom.css" rel="stylesheet">
+
+</head>
+<body>
+	<div class="container-fluid" id="wrapper">
+		<div class="row">
+			{% include 'backend/sidebar.html.twig' %}
+			<!--<main class="col-xs-12 col-sm-8 col-lg-9 col-xl-10 pt-3 pl-4 ml-auto">-->
+			<main class="col-xs-12 col-sm-8 col-lg-9 col-xl-10 ml-auto">
+				{% include 'backend/header.html.twig' %}
+				<section class="row">
+					<div class="col-sm-12">
+						<section class="row">
+							{% block content %} {% endblock %}
+						</section>
+						{% include 'backend/footer.html.twig' %}
+					</div>
+				</section>
+			</main>
+		</div>
+	</div>
+	{% include 'backend/scripts.html.twig' %}
+</body>
+</html>

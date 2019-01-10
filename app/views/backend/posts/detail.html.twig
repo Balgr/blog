@@ -1,0 +1,51 @@
+{% extends 'backend/layout.html.twig' %}
+
+    {% block content %}
+        <div class="col-md-12 col-lg-8">
+            <div class="card mb-4">
+                <div class="card-block">
+                    <h3 class="card-title">{%  if post is not null %}Edition{% else %}Nouveau post{% endif %}</h3>
+                    <!-- Actual form -->
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% if post is not null %} <input type="hidden" name="id" class="form-control" value="{{ post.id }}"> {% endif %}
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">Titre</label>
+                            <div class="col-md-9">
+                                <input type="text" name="title" class="form-control" value="{{ post.title }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">Sous-titre</label>
+                            <div class="col-md-9">
+                                <input type="text" name="subtitle" class="form-control" value="{{ post.subtitle }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">Contenu</label>
+                            <div class="col-md-9">
+                                <textarea name="content" class="form-control">{{ post.content }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            {% if post is not null %}
+                            <div class="featured-image">
+                                <img src="{{ imgPath }}{{ post.featuredImage }}" alt="Featured Image" width="200" height="150"/>
+                            </div>
+                            {% endif %}
+                            <label class="col-md-3 col-form-label">Image (1920x728)</label>
+                            <div class="col-md-9">
+                                <input type="file" name="featuredImage" class="form-control" value="{{ post.featuredImage }}" accept="image/png, image/jpeg">
+                            </div>
+                        </div>
+                        {% if post is not null %}<div class="form-group row">
+                            <label class="col-md-3 col-form-label">Raison pour édition</label>
+                            <div class="col-md-9">
+                               <input type="text" name="lastEditReason" class="form-control">
+                            </div>
+                        </div>{% endif %}
+                        <input type="submit" value="Créer">
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endblock %}

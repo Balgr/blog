@@ -1,0 +1,48 @@
+.action-login, .action-register, .action-logout, .action-backend {
+    color: white;
+}
+
+.label-profile {
+    margin: 0 15px 27px;
+}
+
+.description {
+    text-align: justify;
+}
+
+.description p{
+    color: white;
+}
+
+.logo-vertical {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
+
+#scrollUp {
+    border-radius: 100px;
+    background: #bdbdbd87 none repeat scroll 0 0;
+}
+
+@media screen and (max-width: 575px) {
+    .single-count4-content {
+        text-align: center;
+    }
+
+    .section-title-5 {
+        text-align: center;
+    }
+
+    .slider-text-7 {
+        text-align: center;
+    }
+}
+
+.copyright, .copyright-hm3 {
+    padding: 10px;
+}
+
+.errors-form p {
+    color: red !important;
+}

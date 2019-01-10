@@ -1,0 +1,45 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{% block title %}{% endblock %}</title>
+        <meta name="description" content="">
+        <meta name="robots" content="noindex, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="/public/frontend/frontend/img/favicon.png">
+
+		<!-- all css here -->
+        <link rel="stylesheet" href="/public/frontend/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/public/frontend/css/icons.css">
+        <link rel="stylesheet" href="/public/frontend/css/plugins.css">
+        <link rel="stylesheet" href="/public/frontend/css/style.css">
+        <link rel="stylesheet" href="/public/frontend/css/custom.css">
+        <link rel="stylesheet" href="/public/frontend/css/responsive.css">
+        <script src="/public/frontend/js/vendor/modernizr-2.8.3.min.js"></script>
+    </head>
+    <body class="wrapper">
+        <!-- header start -->
+        {% include 'frontend/layouts/header.html.twig' %}
+        <!-- breadcrumb area -->
+        {% block breadcrumb %}{% endblock %}
+        <!-- main-search start -->
+        <!-- summary-info start -->
+        {% include 'frontend/layouts/summary.html.twig' %}
+
+        {% block content %}{% endblock %}
+
+        {% include 'frontend/layouts/footer.html.twig' %}
+
+
+		<!-- all js here -->
+        <script src="/public/frontend/js/vendor/jquery-1.12.0.min.js"></script>
+        <script src="/public/frontend/js/popper.js"></script>
+        <script src="/public/frontend/js/bootstrap.min.js"></script>
+        <script src="/public/frontend/js/ajax-mail.js"></script>
+        <script src="/public/frontend/js/plugins.js"></script>
+        {% block script %}{% endblock %}
+        <script src="/public/frontend/js/main.js"></script>
+    </body>
+</html>
