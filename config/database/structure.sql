@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le :  lun. 10 déc. 2018 à 14:41
+-- Généré le :  jeu. 10 jan. 2019 à 19:15
 -- Version du serveur :  10.1.36-MariaDB
 -- Version de PHP :  7.2.10
 
@@ -30,10 +30,11 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `comments` (
   `id` int(11) NOT NULL,
-  `content` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `creationDate` datetime NOT NULL,
   `authorName` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` enum('Published','In moderation','Trash') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `authorEmail` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` tinyint(4) NOT NULL,
   `postId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -48,8 +49,8 @@ CREATE TABLE `posts` (
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `subtitle` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `creationDate` date NOT NULL,
-  `lastEditDate` date DEFAULT NULL,
+  `creationDate` datetime NOT NULL,
+  `lastEditDate` datetime DEFAULT NULL,
   `lastEditReason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `featuredImage` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` enum('Published','Trash') COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -67,8 +68,9 @@ CREATE TABLE `users` (
   `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `biography` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
   `dateInscription` date NOT NULL,
-  `category` enum('Admin','Member') COLLATE utf8mb4_unicode_ci NOT NULL
+  `category` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
