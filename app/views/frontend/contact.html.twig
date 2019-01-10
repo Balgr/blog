@@ -1,0 +1,165 @@
+{% extends 'frontend/layouts/layout.html.twig' %}
+
+{% block breadcrumb %}
+
+{% endblock %}
+
+        {% block content %}
+        <div class="contact-area pt-15">
+            <div class="container-fluid">
+                <div class="contact-map">
+                    <div id="map"></div>
+                </div>
+            </div>
+            <div class="pt-120 pb-120">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-5 col-md-6">
+                            <div class="contact-info-area">
+                                <h2>Contact</h2>
+                                <p>Si vous souhaitez obtenir plus d'informations sur les services que nous proposons, ou que vous voulez simplement nous passer un petit bonjour,
+                                n'hésitez surtout pas à nous contacter via les canaux suivants.<br>Nous garantissons une réponse sous 48 heures.
+                                </p>
+                                <div class="contact-info-wrap">
+                                    <div class="single-contact-info">
+                                        <div class="contact-info-icon">
+                                            <i class="ti-mobile"></i>
+                                        </div>
+                                        <div class="contact-info-content">
+                                            <p>+33 7 XX XX XX XX</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-contact-info">
+                                        <div class="contact-info-icon">
+                                            <i class="ti-email"></i>
+                                        </div>
+                                        <div class="contact-info-content">
+                                            <p><a href="../../../index.php">mehdi@farem.tech</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-7 col-md-6">
+                            <div class="pl-85">
+                                <div class="contact-from contact-shadow">
+                                    <form id="contact-form" action="/public/frontend/mail.php" method="post">
+                                        <input name="name" type="text" placeholder="Nom">
+                                        <input name="email" type="text" placeholder="Email">
+                                        <textarea name="message" placeholder="Votre message"></textarea>
+                                        <input class="submit" type="submit" value="Envoyer">
+                                    </form>
+                                    <p class="form-messege"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+        
+		
+		{% block script %}
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzcEM8z2_imGO8TMRmJEpDEahvZ7KYY_U"></script>
+        <script>
+            function init() {
+                var mapOptions = {
+                    zoom: 11,
+                    scrollwheel: false,
+                    center: new google.maps.LatLng(40.709896, -73.995481),
+                    styles: 
+                    [
+                        {
+                            "featureType": "administrative",
+                            "elementType": "labels.text.fill",
+                            "stylers": [
+                                {
+                                    "color": "#444444"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "landscape",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "color": "#f2f2f2"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "poi",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "visibility": "off"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "saturation": -100
+                                },
+                                {
+                                    "lightness": 45
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road.highway",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "visibility": "simplified"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road.arterial",
+                            "elementType": "labels.icon",
+                            "stylers": [
+                                {
+                                    "visibility": "off"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "transit",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "visibility": "off"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "water",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "color": "#46bcec"
+                                },
+                                {
+                                    "visibility": "on"
+                                }
+                            ]
+                        }
+                    ]
+                };
+                var mapElement = document.getElementById('map');
+                var map = new google.maps.Map(mapElement, mapOptions);
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(48.6790445, 2.2831707),
+                    map: map,
+                    icon: 'assets/img/icon-img/map.png',
+                    animation:google.maps.Animation.BOUNCE,
+                    title: 'Snazzy!'
+                });
+            }
+            google.maps.event.addDomListener(window, 'load', init);
+		</script>
+{% endblock %}

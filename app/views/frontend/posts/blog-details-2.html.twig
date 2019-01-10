@@ -1,0 +1,104 @@
+{% extends 'frontend/layouts/layout.html.twig' %}
+{% block breadcrumb %}
+    {% include 'frontend/breadcrumbs/posts/detail.html.twig' %}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="blog-details-area pt-70 pb-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 ml-auto mr-auto">
+                    <div class="blog-details-wrap blog-details-2 pl-50 pr-50">
+                        <div class="b-details-content-wrap">
+                            <div class="blog-content-3 text-center mb-25">
+                                <h4>{{ post.title }}</h4>
+                                <h5><i><a href="/backend/posts/edit/{{ post.id }}">Editer</a></i></h5>
+                                <div class="blog-meta-3">
+                                    <ul>
+                                        <!--<li>Brabding</li>-->
+                                        <li>By <a href="#"><span>{{ post.author.username }}</span></a></li>
+                                        <li>{{ post.creationDate|date('j/m/Y') }} </li>
+                                        <li><a href="#comments">{{ post.comments|length }}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {{ post.content }}
+                            <!-- TODO : TAGS will later be implemented for each post, and will be displayed below -->
+                            <div class="details-category-social">
+                                <div class="details-category">
+                                    <ul>
+                                        <li><a href="#">#blog</a></li>
+                                        <li><a href="#">#Photography</a></li>
+                                        <li><a href="#">#Culture</a></li>
+                                    </ul>
+                                </div>
+                                <div class="details-social">
+                                    <ul>
+                                        <li><a href="#"><i class="ti-facebook"></i></a></li>
+                                        <li><a href="#"><i class="ti-twitter-alt"></i></a></li>
+                                        <li><a href="#"><i class="ti-pinterest"></i></a></li>
+                                        <li><a href="#"><i class="ti-tumblr-alt"></i></a></li>
+                                        <li><a href="#"><i class="ti-google"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="b-details-author mt-45 mb-50 pt-55 pb-60 border-bottom-4 border-top-5">
+                                <div class="b-details-author-img">
+                                    <img alt="" src="/public/frontend/img/blog/blog-author-2.png">
+                                </div>
+                                <div class="b-details-content">
+                                    <h5>{{ post.author.username }}</h5>
+                                    <p>{{ post.author.biography }}</p>
+                                </div>
+                            </div>
+                            <div class="blog-comments-area border-bottom-4 pb-60">
+                                {% include 'frontend/posts/comment-list.html.twig' %}
+                            </div>
+                            <div class="blog-reply-area pt-45">
+                                <h4 class="blog-details-title">Leave A Reply</h4>
+                                <div class="errors-form">
+                                    {% for error in errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                                <div class="blog-form-wrapper custom-col-15">
+                                    <form action="/posts/{{ post.id }}/comment" method="post">
+                                        <input type="hidden" name="postId" value="{{ post.id }}">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="leave-form">
+                                                    {% if currentUser is not null  %}
+                                                        {{ currentUser.username }}
+                                                    {% else %}
+                                                        <input type="text" placeholder="Name" name="username">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="leave-form">
+                                                    {% if currentUser is not null  %}
+                                                        {{ currentUser.email }}
+                                                    {% else %}
+                                                        <input type="text" placeholder="Email" name="email">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12" style="padding-top: 10px">
+                                                <div class="text-leave">
+                                                    <textarea placeholder="Commentaire..." name="content"></textarea>
+                                                    <input type="submit" value="Post Comment">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
