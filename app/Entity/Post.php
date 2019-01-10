@@ -21,6 +21,9 @@ class Post extends Entity
     private $featuredImage;
     private $status;
     private $creatorId;
+    private $author;
+    private $comments;
+    private $commentsNb;
 
     // Constantes d'exceptions
     const INVALID_AUTHOR = 1;
@@ -28,11 +31,16 @@ class Post extends Entity
     const INVALID_CONTENT = 3;
     const INVALID_REASON_EDITION = 4;
 
+    // Constantes de statut
+    const POST_STATUS_PUBLISHED = "Published";
+    const POST_STATUS_TRASH = "Trash";
+
     public function isValid()
     {
-        $validEdition = !$this->isNew() ? !empty($this->lastEditDate) || !empty($this->lastEditReason) : true;
-
-        return !$validEdition || !empty($this->title) || !empty($this->subtitle) || !empty($this->content) || !empty($this->creationDate) || !empty($this->status) || !empty($this->creatorId);
+        if(!is_null($this->title) && !is_null($this->subtitle) && !is_null($this->content) && !is_null($this->creationDate) && !is_null($this->status) && !is_null($this->creatorId)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -180,8 +188,51 @@ class Post extends Entity
     }
 
 
+    /**
+     * @return mixed
+     */
+    public function author()
+    {
+        return $this->author;
+    }
 
-    public function toArray() {
-        return get_object_vars($this);
+    /**
+     * @param mixed $author
+     */
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function comments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param mixed $comments
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function commentsNb()
+    {
+        return $this->commentsNb;
+    }
+
+    /**
+     * @param mixed $commentsNb
+     */
+    public function setCommentsNb($commentsNb)
+    {
+        $this->commentsNb = $commentsNb;
     }
 }

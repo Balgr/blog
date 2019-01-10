@@ -16,16 +16,14 @@ use mysql_xdevapi\Exception;
 
 class CommentModel extends Model
 {
-    public function getComments($status = null) {
+    public function getComments($status = null, $limit = null) {
         $req = "SELECT * FROM " . $this->tableName;
 
         if(!is_null($status)) {
-            if($status == Comment::COMMENT_PUBLISHED || $status == Comment::COMMENT_TRASH || $status == Comment::COMMENT_IN_MODERATION ) {
-                $req .= " WHERE status = " . $status;
-            }
-            else {
-                throw new \Exception("Commentaires : statut invalide.");
-            }
+            $req .= " WHERE status = " . $status;
+        }
+        if($limit != CommentModel::NO_LIMIT) {
+            $req .= ' LIMIT ' . $limit;
         }
 
         $data = $this->db->pdo()->query($req);
@@ -70,4 +68,12 @@ class CommentModel extends Model
         }
     }
 
+    public function countComments($postId)
+    {
+        $req = $this->db->pdo()->prepare("SELECT COUNT(*) FROM $this->tableName WHERE postId = ?");
+
+        $req->execute(array($postId));
+
+        return $req->fetchColumn();
+    }
 }
