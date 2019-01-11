@@ -5,6 +5,11 @@
             <div class="card mb-4">
                 <div class="card-block">
                     <h3 class="card-title">Posts</h3>
+                    <div class="errors-form">
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
                     {# <div class="dropdown card-title-btn-container">
                         <button class="btn btn-sm btn-subtle" type="button"><em class="fa fa-list-ul"></em> View All</button>
                         <button class="btn btn-sm btn-subtle dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><em class="fa fa-cog"></em></button>

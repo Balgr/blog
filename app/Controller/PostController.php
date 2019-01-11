@@ -41,7 +41,9 @@ class PostController extends Controller
         //var_dump(is_dir(__DIR__ . '/../../public/uploads/posts/'));
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            var_dump('OK');
             $this->validateAndSanitizePostData();
+            var_dump('OKay');
         }
     }
 
@@ -50,12 +52,12 @@ class PostController extends Controller
      */
     public function showListPostsAction() {
         $posts = $this->getPosts();
-        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "posts" => $posts, "current" => array("posts", "list")));
+        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "posts" => $posts, "current" => array("posts", "list")));
     }
 
     public function showPostsTrashedAction() {
         $posts = $this->getPosts(Post::POST_STATUS_TRASH);
-        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "posts" => $posts, "current" => array("posts", "trash")));
+        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "posts" => $posts, "current" => array("posts", "trash")));
     }
 
     public function createPostAction() {
@@ -80,6 +82,13 @@ class PostController extends Controller
 
     public function editPostAction($id) {
         $post = new Post($this->model()->getSingle($id));
+        if(!$post->isValid()) {
+            $this->errors['undefined'] = "Le post #$id n'existe pas";
+            $this->showListPostsAction();
+        }
+        // Decodes the Post content in HTML for rendering
+        $post->setContent(html_entity_decode($post->content()));
+
         if($_SERVER['REQUEST_METHOD'] == 'GET') {
             if($post->isValid()) {
                 echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath, "current" => array("posts", "list")));
@@ -189,6 +198,11 @@ class PostController extends Controller
             $post->setComments($this->commentController->model()->getAllByPost($id, $this->commentController->model::NO_LIMIT));
             $post->setAuthor(new User($this->model->getAuthor($id)));
 
+            // Decodes the Post content in HTML for rendering
+            $post->setContent(html_entity_decode($post->content()));
+
+            var_dump($post->comments());
+
             echo $this->twig->render("frontend/posts/blog-details-2.html.twig", array("post" => $post, "currentUser" => $this->currentUser, "errors" => $errors));
         }
         else {
@@ -252,29 +266,30 @@ class PostController extends Controller
 
     private function validateAndSanitizePostData()
     {
+        var_dump($_POST['content']);
         if(empty($_POST['title']) OR empty($_POST['subtitle']) OR empty($_POST['content'])) {
             $this->errors['empty'] = 'Veuillez remplir tous les champs';
         }
         else {
             // Checks title
             $_POST['title'] = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
-            if (!filter_var($_POST['title']) === false) {
+            if (filter_var($_POST['title'], FILTER_SANITIZE_STRING) === false) {
                 $this->errors['email'] = 'Veuillez entrer un titre correct';
             }
 
             // Checks subtitle
             $_POST['subtitle'] = htmlspecialchars($_POST['subtitle']);
             $_POST['subtitle'] = filter_var($_POST['subtitle'], FILTER_SANITIZE_STRING);
-            if (!preg_match('/^.{5,}$', $_POST['subtitle'])) {
+            if (!preg_match('/^.{5,}$/', $_POST['subtitle'])) {
                 $this->errors['subtitle'] = 'Le sous-titre doit contenir plus de 5 caractères.';
             }
 
             // Checks content
             $_POST['content'] = htmlspecialchars($_POST['content']);
-            $_POST['content'] = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
-            if (!preg_match('/^.{100,}$', $_POST['content']) && (strlen(trim($_POST['content'])) !== 0)) {
+            //$_POST['content'] = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
+            /*if (!preg_match('/^.{100,}$', $_POST['content']) && (strlen(trim($_POST['content'])) !== 0)) {
                 $this->errors['content'] = 'Le post doit contenir au moins 100 caractères.';
-            }
+            }*/
         }
 
         // The checks for the Image input are handled by the Upload library.

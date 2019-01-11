@@ -64,16 +64,14 @@ body {
     color: red !important;
 }
 
-.sub-nav-item {
-
+.nav-item a {
+    font-size: .9em;
 }
 
 .sub-nav-item a {
     font-size: .6em !important;
+    margin-left: 20px;
 }
 
-.sidebar-nav > .nav-item {
-    text-align: center;
-}
 
 /*  TODO : change the signout on responsive */

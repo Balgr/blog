@@ -63,7 +63,7 @@ class UserController extends Controller
      */
     public function showListUsersAction() {
         $users = $this->model->getAll();
-        echo $this->twig->render("backend/users/index.html.twig", array("currentUser" => $this->currentUser, "users" => $users, "current" => array("users", "list")));
+        echo $this->twig->render("backend/users/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "users" => $users, "current" => array("users", "list")));
     }
 
     /**
@@ -96,7 +96,10 @@ class UserController extends Controller
                 $this->editUser($_POST, $id);
                 header('Location: /backend/users/');
             }
-            echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user, "errors", $this->errors, "current" => array("users", "list")));
+        }
+        else {
+            $this->errors['undefined'] = "L'utilisateur #$id n'existe pas";
+            $this->showListUsersAction();
         }
         throw new \Exception('Utilisateur inexistant');
     }

@@ -183,8 +183,8 @@ class CommentController extends Controller
 
             // Adds the data not set in the form (the creationDate, the status (In Moderation), and the author info if it is connected)
             if (!is_null($this->currentUser)) {
-                $_POST['authorName'] = $this->currentUser->email();
-                $_POST['authorEmail'] = $this->currentUser->username();
+                $_POST['authorName'] = $this->currentUser->username();
+                $_POST['authorEmail'] = $this->currentUser->email();
             }
             $_POST['creationDate'] = date('Y-m-d H:i');
             $_POST['status'] = Comment::COMMENT_IN_MODERATION;
@@ -209,7 +209,6 @@ class CommentController extends Controller
 
     private function validateAndSanitizePostData()
     {
-        //var_dump($_POST);
         if(empty($_POST['authorName']) OR empty($_POST['authorEmail']) OR empty($_POST['content']) OR empty($_POST['postId'])) {
             $this->errors['empty'] = 'Veuillez remplir tous les champs';
         }
@@ -220,13 +219,14 @@ class CommentController extends Controller
                 $this->errors['email'] = 'Veuillez entrer un email correct.';
             }
 
-            $_POST['authorName'] = htmlspecialchars($_POST['authorName']);
+            $_POST['authorName'] = strip_tags($_POST['authorName']);
             if (!preg_match('/^[a-zA-Z0-9]{5,}/', $_POST['authorName'])) {
                 $this->errors['authorName'] = 'Veuillez entrer un nom d\'utilisateur, au moins 6 caractères alphanumériques.';
             }
 
-            $_POST['content'] = htmlspecialchars($_POST['content']);
-            if (!preg_match('/^.{15,}$', $_POST['content']) && (strlen(trim($_POST['content'])) !== 0)) {
+            $_POST['content'] = strip_tags($_POST['content']);
+            var_dump($_POST['content']);
+            if (!preg_match('/^.{15,}$', $_POST['content']) === FALSE) {
                 $this->errors['content'] = 'Le commentaire doit contenir au moins 15 caractères.';
             }
         }
