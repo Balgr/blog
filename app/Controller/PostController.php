@@ -50,19 +50,24 @@ class PostController extends Controller
      */
     public function showListPostsAction() {
         $posts = $this->getPosts();
-        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "posts" => $posts));
+        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "posts" => $posts, "current" => array("posts", "list")));
+    }
+
+    public function showPostsTrashedAction() {
+        $posts = $this->getPosts(Post::POST_STATUS_TRASH);
+        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "posts" => $posts, "current" => array("posts", "trash")));
     }
 
     public function createPostAction() {
         if($_SERVER['REQUEST_METHOD'] != 'POST') {
-            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath));
+            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath, "current" => array("posts", "add")));
         }
         else {
             if(empty($this->errors)) {
                 $this->addPost($_POST);
                 header('Location: /backend/posts/');
             }
-            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath, "errors" => $this->errors));
+            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath, "errors" => $this->errors, "current" => array("posts", "add")));
         }
     }
     private function addPost($data) {
@@ -74,10 +79,10 @@ class PostController extends Controller
     }
 
     public function editPostAction($id) {
+        $post = new Post($this->model()->getSingle($id));
         if($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $post = new Post($this->model()->getSingle($id));
             if($post->isValid()) {
-                echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath));
+                echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath, "current" => array("posts", "list")));
             }
         }
         else if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -85,7 +90,7 @@ class PostController extends Controller
                 $this->editPost($_POST, $id);
                 header('Location: /backend/posts/');
             }
-            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath, "errors" => $this->errors));
+            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath, "errors" => $this->errors, "current" => array("posts", "list")));
         }
     }
 

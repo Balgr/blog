@@ -66,6 +66,8 @@ try {
     $router->post('/backend', 'Backend#showHomeAction');
 
     $router->get('/backend/posts', 'Post#showListPostsAction');
+    $router->get('/backend/posts/trash', 'Post#showPostsTrashedAction');
+    $router->post('/backend/posts/trash', 'Post#showPostsTrashedAction');
     $router->get('/backend/posts/add', 'Post#createPostAction');
     $router->post('/backend/posts/add', 'Post#createPostAction');
     $router->get('/backend/posts/edit/:id', 'Post#editPostAction');
@@ -84,6 +86,7 @@ try {
     $router->post('/backend/users/delete/:id', 'User#deleteUserAction')->with('id', '[0-9]+');
 
     $router->get('/backend/comments', 'Comment#showListCommentsAction');
+    $router->get('/backend/comments/trash', 'Comment#showCommentsTrashedAction');
     $router->get('/backend/comments/moderate', 'Comment#showCommentsToModerateAction');
     $router->get('/backend/comments/publish/:id', 'Comment#publishCommentAction')->with('id', '[0-9]+');
     $router->get('/backend/comments/trash/:id', 'Comment#trashCommentAction')->with('id', '[0-9]+');

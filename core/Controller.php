@@ -121,7 +121,7 @@ abstract class Controller
     /**
      * @return mixed
      */
-    protected function model()
+    public function model()
     {
         return $this->model;
     }

@@ -69,7 +69,7 @@ class PostModel extends Model
         if($limit !== -1) {
             $req = $req . " LIMIT " .$this->limit;
         }
-        var_dump($req);
+        //var_dump($req);
         $data = $this->db->pdo()->query($req);
         return $data->fetchAll();
     }

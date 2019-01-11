@@ -12,6 +12,7 @@
                             <a class="dropdown-item" href="#"><em class="fa fa-thumb-tack mr-1"></em> Pin Window</a>
                             <a class="dropdown-item" href="#"><em class="fa fa-remove mr-1"></em> Close Window</a></div>
                     </div> #}
+                    {% if comments is not empty %}
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -40,6 +41,9 @@
                             </tbody>
                         </table>
                     </div>
+                    {% else %}
+                        <p>Aucun commentaire à afficher.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -63,7 +63,7 @@ class UserController extends Controller
      */
     public function showListUsersAction() {
         $users = $this->model->getAll();
-        echo $this->twig->render("backend/users/index.html.twig", array("currentUser" => $this->currentUser, "users" => $users));
+        echo $this->twig->render("backend/users/index.html.twig", array("currentUser" => $this->currentUser, "users" => $users, "current" => array("users", "list")));
     }
 
     /**
@@ -76,7 +76,7 @@ class UserController extends Controller
             header('Location: /backend/users/');
         }
 
-        echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors));
+        echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "current" => array("users", "add")));
     }
 
     private function addUser($data)
@@ -90,13 +90,13 @@ class UserController extends Controller
         if($user->isValid()) {
             // Si GET : formulaire
             if($_SERVER['REQUEST_METHOD'] == 'GET') {
-                echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user));
+                echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user, "current" => array("users", "list")));
             }
             if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($this->errors)) {
                 $this->editUser($_POST, $id);
                 header('Location: /backend/users/');
             }
-            echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user, "errors", $this->errors));
+            echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user, "errors", $this->errors, "current" => array("users", "list")));
         }
         throw new \Exception('Utilisateur inexistant');
     }

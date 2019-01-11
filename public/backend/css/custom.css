@@ -72,5 +72,8 @@ body {
     font-size: .6em !important;
 }
 
+.sidebar-nav > .nav-item {
+    text-align: center;
+}
 
 /*  TODO : change the signout on responsive */

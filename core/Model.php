@@ -45,9 +45,12 @@ abstract class Model
     }
 
 
-    public function getAll ($limit = -1) {
+    public function getAll ($status = -1, $limit = -1) {
         $req = "SELECT * FROM " . $this->tableName;
-        if($limit !== -1) {
+        if($status != -1) {
+            $req .=  " WHERE $this->tableName.status = '$status'";
+        }
+        if($limit != -1) {
             $req = $req . " LIMIT " .$this->limit;
         }
         $data = $this->db->pdo()->query($req);

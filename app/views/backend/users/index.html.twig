@@ -12,30 +12,34 @@
                             <a class="dropdown-item" href="#"><em class="fa fa-thumb-tack mr-1"></em> Pin Window</a>
                             <a class="dropdown-item" href="#"><em class="fa fa-remove mr-1"></em> Close Window</a></div>
                     </div> #}
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nom</th>
-                                <th>Email</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for user in users %}
-                            <tr>
-                                <td>{{ user.id }}</td>
-                                <td><a href="/backend/users/edit/{{ user.id }}">{{ user.username }}</a></td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.category }}</td>
-                                <td><a href="/backend/users/delete/{{ user.id }}"><em class="fa fa-minus-circle"></em></a></td>
-                            </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% if users is not empty %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td><a href="/backend/users/edit/{{ user.id }}">{{ user.username }}</a></td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.category }}</td>
+                                    <td><a href="/backend/users/delete/{{ user.id }}"><em class="fa fa-minus-circle"></em></a></td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p>Aucun utilisateur à afficher.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

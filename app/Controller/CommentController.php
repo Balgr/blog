@@ -29,12 +29,17 @@ class CommentController extends Controller
 
     public function showListCommentsAction() {
         $comments = $this->getComments();
-        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments));
+        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "list")));
+    }
+
+    public function showCommentsTrashedAction() {
+        $comments = $this->getComments(Comment::COMMENT_TRASH);
+        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "trash")));
     }
 
     public function showCommentsToModerateAction() {
         $comments = $this->getComments(Comment::COMMENT_IN_MODERATION);
-        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments));
+        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "moderate")));
     }
 
     public function deleteCommentAction($id) {

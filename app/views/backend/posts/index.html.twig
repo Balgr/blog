@@ -12,7 +12,8 @@
                             <a class="dropdown-item" href="#"><em class="fa fa-thumb-tack mr-1"></em> Pin Window</a>
                             <a class="dropdown-item" href="#"><em class="fa fa-remove mr-1"></em> Close Window</a></div>
                     </div> #}
-                    <div class="table-responsive">
+                    {% if posts is not empty %}
+                        <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                             <tr>
@@ -38,6 +39,9 @@
                             </tbody>
                         </table>
                     </div>
+                    {% else %}
+                        <p>Aucun utilisateur à afficher.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
