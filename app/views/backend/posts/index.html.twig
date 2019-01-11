@@ -1,5 +1,8 @@
     {% extends 'backend/layout.html.twig' %}
 
+        {% block title %}Tableau de bord - Liste des posts{% endblock %}
+
+
     {% block content %}
         <div class="col-md-12 col-lg-8">
             <div class="card mb-4">
@@ -45,7 +48,7 @@
                         </table>
                     </div>
                     {% else %}
-                        <p>Aucun utilisateur à afficher.</p>
+                        <p>Aucun post à afficher.</p>
                     {% endif %}
                 </div>
             </div>

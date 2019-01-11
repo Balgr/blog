@@ -1,7 +1,12 @@
 {% extends 'frontend/layouts/layout.html.twig' %}
+
+    {% block title %}Farem - {{ post.title }}{% endblock %}
+
+
 {% block breadcrumb %}
     {% include 'frontend/breadcrumbs/posts/detail.html.twig' %}
 {% endblock %}
+
 
 
 {% block content %}

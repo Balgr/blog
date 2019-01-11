@@ -1,10 +1,13 @@
 {% extends 'backend/layout.html.twig' %}
 
+    {% block title %}Tableau de bord - {%  if post is not null %}Edition du post {{ post.id }}{% else %}Nouveau post{% endif %}{% endblock %}
+
+
     {% block content %}
         <div class="col-md-12 col-lg-8">
             <div class="card mb-4">
                 <div class="card-block">
-                    <h3 class="card-title">{%  if post is not null %}Edition{% else %}Nouveau post{% endif %}</h3>
+                    <h3 class="card-title">{%  if post is not null %}Edition du post #{{ post.id }}{% else %}Nouveau post{% endif %}</h3>
                     <div class="errors-form">
                         {% for error in errors %}
                             <p>{{ error }}</p>

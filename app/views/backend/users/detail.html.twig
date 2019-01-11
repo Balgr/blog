@@ -1,5 +1,8 @@
 {% extends 'backend/layout.html.twig' %}
 
+    {% block title %}Tableau de bord - {%  if user is not null %}Edition de l'utilisateur {{ user.id }}{% else %}Nouvel utilisateur{% endif %}{% endblock %}
+
+
     {% block content %}
         <div class="col-md-12 col-lg-8">
             <div class="card mb-4">

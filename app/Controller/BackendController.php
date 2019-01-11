@@ -40,6 +40,6 @@ class BackendController extends Controller
     }
 
     public function showHomeAction() {
-        echo $this->twig->render("backend/home.html.twig", array("currentUser" => $this->currentUser));
+        echo $this->twig->render("backend/home.html.twig", array("currentUser" => $this->currentUser, "current" => array("home")));
     }
 }
