@@ -145,24 +145,26 @@ class UserController extends Controller
 
         // If the User is NOT passing data from the registration form, shows him the form.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('/login');
-        }
-
-        // If the data is not correct (does not pass the validation), shows the form with errors
-        if (empty($this->errors)) {
-            $this->checkEmailAndUsernameInDatabase($_POST);
-        }
-
-        if(!empty($this->errors)) {
-            echo $this->twig->render('frontend/login-register.html.twig',
+            echo $this->twig->render('frontend/register.html.twig',
                 array(
                     "user" => array("category" => $this->categories),
                     "errors" => $this->errors
                 ));
         }
-
-        // Else, creates a new User and redirects to the homepage
         else {
+            if(empty($this->errors)) {
+                $this->checkEmailAndUsernameInDatabase($_POST);
+            }
+
+            else {
+                echo $this->twig->render('frontend/register.html.twig',
+                    array(
+                        "user" => array("category" => $this->categories),
+                        "errors" => $this->errors
+                    ));
+                return;
+            }
+
             // Adds the User data not set in the form
             $_POST['dateInscription'] = date('Y-m-d H:i');
             $_POST['category'] = User::STATUS_MEMBER; // By default, a User is only a Member.
@@ -174,6 +176,7 @@ class UserController extends Controller
 
             header('Location: /');
         }
+        // If the data is not correct (does not pass the validation), shows the form with errors
     }
 
     /**
@@ -251,7 +254,7 @@ class UserController extends Controller
                     }
                 }
             }
-            echo $this->twig->render('frontend/login-register.html.twig', array("errors" => $this->errors));
+            echo $this->twig->render('frontend/login.html.twig', array("errors" => $this->errors));
         }
     }
 

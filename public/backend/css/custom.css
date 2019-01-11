@@ -64,4 +64,13 @@ body {
     color: red !important;
 }
 
+.sub-nav-item {
+
+}
+
+.sub-nav-item a {
+    font-size: .6em !important;
+}
+
+
 /*  TODO : change the signout on responsive */

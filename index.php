@@ -47,17 +47,11 @@ try {
     $router->post('/logout', 'User#logoutAction');
     $router->get('/profile', 'User#profileAction');
     $router->post('/profile', 'User#profileAction');
-    $router->get('/users/edit/:id', 'BackendUser#editAction')->with('id', '[0-9]+');
-    $router->post('/users/edit/:id', 'BackendUser#editAction')->with('id', '[0-9]+');
 
     // COMMENTS
     // -- Frontend
     $router->get('/posts/:id/comment/', 'Comment#addAction')->with('id', '[0-9]+');
     $router->post('/posts/:id/comment', 'Comment#addAction')->with('id', '[0-9]+');
-    $router->get('/comments/edit/:id', 'Comment#editAction')->with('id', '[0-9]+');
-    $router->post('/comments/edit/:id', 'Comment#editAction')->with('id', '[0-9]+');
-    $router->get('/comments/show/:id', 'Comment#showAction')->with('id', '[0-9]+');
-    $router->post('/comments/show/:id', 'Comment#showAction')->with('id', '[0-9]+');
 
     // CONTACT
     $router->get('/contact', 'Contact#showContactPageAction');

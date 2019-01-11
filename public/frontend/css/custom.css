@@ -46,3 +46,8 @@
 .errors-form p {
     color: red !important;
 }
+
+
+div.login-register-tab-list.nav > a {
+    margin: auto;
+}
