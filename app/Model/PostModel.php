@@ -31,8 +31,6 @@ class PostModel extends Model
             return true;
         }
         return false;
-        // Returns the selected row id
-        //return $id;
     }
 
     public function getAuthor($id)

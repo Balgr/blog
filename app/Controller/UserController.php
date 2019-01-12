@@ -138,7 +138,7 @@ class UserController extends Controller
 
     public function profileAction()
     {
-        if ($this->currentUser != false) {
+        if ($this->currentUser !== false) {
             $this->editProfileAction($this->currentUser->id());
         } else {
             throw new Exception("Erreur : vous n'êtes pas connecté.");
@@ -150,7 +150,7 @@ class UserController extends Controller
      */
     public function registerAction()
     {
-        if ($this->currentUser != false) {
+        if ($this->currentUser !== false) {
             header('Location: /');
         }
 
@@ -221,7 +221,7 @@ class UserController extends Controller
     public function loginAction()
     {
         // If the User is already logged in...
-        if ($this->currentUser != false) {
+        if ($this->currentUser !== false) {
             header("Location: /");
         } else {
             // Else, if the User sends a POST request, it means that he already completed the login form.

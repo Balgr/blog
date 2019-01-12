@@ -97,11 +97,9 @@ abstract class Model
         $preparedData = '';
         foreach($data as $key => $val) {
             $preparedData .= $key . '= ?, ';
-            $values[] = $val;
         }
         $preparedData = rtrim($preparedData, ', ');
         $req = "UPDATE ". $this->tableName . " SET " . $preparedData . " WHERE id=" . $id . ' ';
-
 
         // Updates the selected row
         $req = $this->db->pdo()->prepare($req);

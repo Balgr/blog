@@ -33,7 +33,7 @@
                                 </ul>
                             </div>
                             <h4><a href="/posts/{{ post.id }}">{{ post.title }}</a></h4>
-                            <p>{{ post.content|length > 50 ? post.content|slice(0, 200)|striptags|escape ~ '...' : post.content|striptags|escape }} </p>
+                            <p>{{ post.content|length > 50 ? post.content|slice(0, 200)|striptags ~ '...' : post.content|striptags }} </p>
                         </div>
                     </div>
                 </div>

@@ -13,22 +13,13 @@ use Blog\core\Controller;
 
 class HomeController extends Controller
 {
-    private $userController;
-    private $currentUser;
-
     public function __construct()
     {
         parent::__construct();
-        $this->userController = new UserController();
-        $this->commentController = new CommentController();
-        if(isset($_SESSION['user'])) {
-            $this->currentUser = UserController::currentUser();
-        }
-
     }
 
     public function showHomePageAction() {
-        echo $this->twig->render("frontend/index-7.html.twig", array("currentUser" => $this->currentUser));
+        echo $this->twig->render("frontend/index-7.html.twig", array("currentUser" => UserController::currentUser()));
     }
 
 }

@@ -12,7 +12,6 @@ use Blog\core\Controller;
 
 class BackendController extends Controller
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -21,7 +20,6 @@ class BackendController extends Controller
     }
 
     public function showHomeAction() {
-        echo $this->twig->render("backend/home.html.twig", array("currentUser" => $this->currentUser, "current" => array("home")));
+        echo $this->twig->render("backend/home.html.twig", array("currentUser" => UserController::currentUser(), "current" => array("home")));
     }
-
 }

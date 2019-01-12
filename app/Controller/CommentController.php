@@ -91,7 +91,7 @@ class CommentController extends Controller
     private function changeStatus($id, $status) {
         if(UserController::isCurrentUserAdmin()) {
             $user = unserialize($_SESSION['user']);
-            if($user != false) {
+            if($user !== false) {
                 $post = new Comment($this->model->getSingle($id));
                 if($this->model->moderateComment($post->id(), $status)) {
                     return true;

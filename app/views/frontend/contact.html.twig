@@ -4,13 +4,13 @@
 
 
 {% block breadcrumb %}
-    <div class="breadcrumb-area bg-img pt-230 pb-152" style="background-image: url(/public/frontend/img/banner/breadcrumb-contact.jpg); width: 1920px; height: 475px;">
+    <div class="breadcrumb-area bg-img pt-230 pb-152" style="background-image: url(/public/frontend/img/banner/breadcrumb-contact.jpg);">
         <div class="container">
             <div class="breadcrumb-content breadcrumb-white text-center">
                 <h2>Contact</h2>
                 <ul>
                     <li>
-                        <a href="/">Home</a>
+                        <a href="/"> Accueil </a>
                     </li>
                     <li class="active"> Contact </li>
                 </ul>
@@ -75,7 +75,7 @@
         {% endblock %}
         
 		
-		{% block script %}
+        {#{% block script %}
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzcEM8z2_imGO8TMRmJEpDEahvZ7KYY_U"></script>
         <script>
             function init() {
@@ -177,4 +177,4 @@
             }
             google.maps.event.addDomListener(window, 'load', init);
 		</script>
-{% endblock %}
+{% endblock %}#}

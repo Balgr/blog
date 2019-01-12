@@ -36,8 +36,7 @@ class PostController extends Controller
         }
 
         // Sets the uploaded files path
-        //$this->uploadPath = __DIR__ . '/../..' . Config::getConfigFromYAML(__DIR__ . '/../../config/config.yml')['posts']['upload_path'];
-        $this->uploadPath = __DIR__ . '/../../public/uploads/posts/';
+        $this->uploadPath = __DIR__ . '/../..' . Config::getConfigFromYAML(__DIR__ . '/../../config/config.yml')['posts']['upload_path'];
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->validateAndSanitizePostData();
@@ -133,7 +132,6 @@ class PostController extends Controller
         $post = new Post($this->model->getSingle($id));
         if ($post->isValid()) {
             if (($this->model->delete($id))) {
-                //header('Location: /posts');
                 return true;
             }
         }
@@ -190,7 +188,6 @@ class PostController extends Controller
      * Shows $limit number of Posts.
      */
     public function indexAction($limit = PostModel::NO_LIMIT) {
-        //$posts = $this->model->getAllBy(Post::POST_STATUS_PUBLISHED, $limit);
         $posts = $this->getPosts(Post::POST_STATUS_PUBLISHED, $limit);
         echo $this->twig->render("frontend/posts/index.html.twig", array("posts" => $posts, "currentUser" => $this->currentUser));
     }
@@ -242,11 +239,10 @@ class PostController extends Controller
             $limit = $this->limit;
         }
         $data = $this->model->getAll($status, $limit);
-
         $posts = [];
         foreach($data as $postData) {
             $post= new Post($postData);
-            $content = str_replace('&amp;', '&', $post->content());
+            $content = str_replace('amp;', '', $post->content());
             $post->setContent(html_entity_decode($content));
             $post->setAuthor($this->model->getAuthor($post->id()));
             $post->setCommentsNb($this->commentController->getNumberOfComments($post->id()));
@@ -293,10 +289,6 @@ class PostController extends Controller
 
             // Checks content
             $_POST['content'] = htmlentities($_POST['content']);
-            //$_POST['content'] = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
-            /*if (!preg_match('/^.{100,}$', $_POST['content']) && (strlen(trim($_POST['content'])) !== 0)) {
-                $this->errors['content'] = 'Le post doit contenir au moins 100 caractères.';
-            }*/
         }
 
         // The checks for the Image input are handled by the Upload library.

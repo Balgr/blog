@@ -1,30 +1,14 @@
 <?php
-
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/core/Autoloader.php';
 
-
 // Calls the autoloader
-use Blog\app\Controller\PostController;
 use Blog\core\Autoloader;
 Autoloader::register();
 
 use Blog\app\Controller\UserController;
 use Blog\app\Model\UserModel;
 use Blog\core\Router;
-
-/*if (isset($_GET['action']) && isset($_GET['module'])) {
-    if ($_GET['module'] == 'posts') {
-        $postController = new PostController();
-        if ($_GET['action'] == 'show') {
-            $postController->showAction($_GET['id']);
-        } else if ($_GET['action'] == 'add') {
-            $postController->addAction();
-        } else if ($_GET['action'] == 'index') {
-            $postController->indexAction();
-        }
-    }
-}*/
 
 session_start();
 

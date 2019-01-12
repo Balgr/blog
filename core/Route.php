@@ -74,9 +74,8 @@ class Route {
     public function getUrl($params) {
         $path = $this->path;
         //e.g.: /path/:id
-        // $k = id
-        foreach ($params as $k => $v) {
-            $path = str_replace(':'.$k, $v, $path);
+        foreach ($params as $id => $v) {
+            $path = str_replace(':'.$id, $v, $path);
         }
         return $path;
     }

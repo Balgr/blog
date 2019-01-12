@@ -15,7 +15,6 @@ class Router {
     private $url;
     private $routes = [];
     private $namedRoutes = [];
-    private $error;
     public function __construct($url) {
         $this->url = $url;
     }
@@ -95,10 +94,8 @@ class Router {
         }
     }
 
-    // TODO : Redirect to 404 or 403 page instead of throwing an Exception.
     private function notFound()
     {
-        echo "Suis là";
         header('Location: /not_found');
     }
 

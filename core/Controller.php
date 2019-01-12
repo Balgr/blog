@@ -142,8 +142,4 @@ abstract class Controller
         $this->loader = new \Twig_Loader_Filesystem($this->templatesPath());
         $this->twig = new \Twig_Environment($this->loader, array('debug' => true));
     }
-
-
-
-
 }
