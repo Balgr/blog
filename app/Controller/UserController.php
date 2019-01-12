@@ -62,6 +62,7 @@ class UserController extends Controller
      */
     public function showListUsersAction()
     {
+        self::whenCurrentUserAccessBackend();
         $users = $this->model->getAll();
         echo $this->twig->render("backend/users/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "users" => $users, "current" => array("users", "list")));
     }
@@ -72,7 +73,8 @@ class UserController extends Controller
      */
     public function createUserAction()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' AND empty($this->errors())) {
+        self::whenCurrentUserAccessBackend();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($this->errors())) {
             $this->addUser($_POST);
             header('Location: /backend/users/');
         }
@@ -89,8 +91,10 @@ class UserController extends Controller
 
     public function editUserAction($id)
     {
+        self::whenCurrentUserAccessBackend();
         $user = new User($this->model()->getSingle($id));
         if ($user->isValid()) {
+            $user->setPassword('');
             // Si GET : formulaire
             if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user, "current" => array("users", "list")));
@@ -103,7 +107,6 @@ class UserController extends Controller
             $this->errors['undefined'] = "L'utilisateur #$id n'existe pas";
             $this->showListUsersAction();
         }
-        throw new \Exception('Utilisateur inexistant');
     }
 
     private function editUser($data, $id)
@@ -116,6 +119,7 @@ class UserController extends Controller
 
     public function deleteUserAction($id)
     {
+        self::whenCurrentUserAccessBackend();
         if ($this->deleteUser($id)) {
             header('Location: /backend/users');
         }
@@ -270,6 +274,12 @@ class UserController extends Controller
         header("Location: /");
     }
 
+    public static function whenCurrentUserAccessBackend() {
+        if(!self::currentUser()->isAdmin()) {
+            header('Location: /forbidden');
+        }
+        return true;
+    }
 
     /**
      * @return bool
@@ -278,13 +288,16 @@ class UserController extends Controller
     public static function isCurrentUserAdmin()
     {
         $user = self::currentUser();
-        return $user->isAdmin();
+        if($user->isValid()) {
+            return $user->isAdmin();
+        }
+        return false;
     }
 
     public static function currentUser()
     {
         if (!isset($_SESSION['user'])) {
-            header('/login');
+            return false;
         }
         $user = unserialize($_SESSION['user']);
         return $user;
@@ -332,7 +345,6 @@ class UserController extends Controller
             // Catégorie
             $_POST['category'] = filter_var((int)$_POST['category'], FILTER_SANITIZE_NUMBER_INT);
             $_POST['category'] = intval($_POST['category']);
-            var_dump($_POST);
             if ($_POST['category'] !== User::STATUS_ADMIN && $_POST['category'] !== User::STATUS_MEMBER) {
                 $this->errors['category'] = 'Catégorie invalide : ' . $_POST['category'];
             }

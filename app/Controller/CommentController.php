@@ -28,21 +28,25 @@ class CommentController extends Controller
      ***********************************/
 
     public function showListCommentsAction() {
+        UserController::whenCurrentUserAccessBackend();
         $comments = $this->getComments();
         echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "list")));
     }
 
     public function showCommentsTrashedAction() {
+        UserController::whenCurrentUserAccessBackend();
         $comments = $this->getComments(Comment::COMMENT_TRASH);
         echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "trash")));
     }
 
     public function showCommentsToModerateAction() {
+        UserController::whenCurrentUserAccessBackend();
         $comments = $this->getComments(Comment::COMMENT_IN_MODERATION);
         echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "moderate")));
     }
 
     public function deleteCommentAction($id) {
+        UserController::whenCurrentUserAccessBackend();
         if($this->delete($id)) {
             header('Location: /backend/comments');
         }
@@ -63,6 +67,7 @@ class CommentController extends Controller
     }
 
     public function trashCommentAction($id) {
+        UserController::whenCurrentUserAccessBackend();
         if($this->trash($id)) {
             header('Location: /backend/comments');
         }
@@ -73,6 +78,7 @@ class CommentController extends Controller
     }
 
     public function publishCommentAction($id) {
+        UserController::whenCurrentUserAccessBackend();
         if($this->publish($id)) {
             header('Location: /backend/comments');
         }
@@ -115,18 +121,6 @@ class CommentController extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * @param int $limit
      * Shows $limit number of Comments. If no limit is defined, the default limit is used.
@@ -148,6 +142,7 @@ class CommentController extends Controller
 
 
     public function commentsByPostAction($postId, $limit = CommentModel::NO_LIMIT) {
+        UserController::whenCurrentUserAccessBackend();
         if($limit === CommentModel::NO_LIMIT) {
             $limit = $this->limit;
         }
@@ -158,7 +153,7 @@ class CommentController extends Controller
             $comments[] = new Comment($comment);
         }
 
-        echo $this->twig->render("comments/backend/index.html.twig.twig", array("comments" => $comments));
+        echo $this->twig->render("comments/backend/index.html.twig", array("comments" => $comments));
     }
 
     /**
@@ -176,6 +171,7 @@ class CommentController extends Controller
 
 
     public function addAction() {
+        UserController::whenCurrentUserAccessBackend();
         if(!isset($_POST)) {
             $this->errors['empty'] = 'Veuillez envoyer le formulaire correctement.';
         }
@@ -191,7 +187,6 @@ class CommentController extends Controller
 
             $this->validateAndSanitizePostData();
 
-            /* data is validated and sanitize */
             if(empty($this->errors)) {
                 $this->model->create($_POST);
                 header('Location: /posts/' . $_POST['postId']);

@@ -48,16 +48,19 @@ class PostController extends Controller
      * BACKEND ROUTES
      */
     public function showListPostsAction() {
+        UserController::whenCurrentUserAccessBackend();
         $posts = $this->getPosts();
         echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "posts" => $posts, "current" => array("posts", "list")));
     }
 
     public function showPostsTrashedAction() {
+        UserController::whenCurrentUserAccessBackend();
         $posts = $this->getPosts(Post::POST_STATUS_TRASH);
         echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "posts" => $posts, "current" => array("posts", "trash")));
     }
 
     public function createPostAction() {
+        UserController::whenCurrentUserAccessBackend();
         if($_SERVER['REQUEST_METHOD'] != 'POST') {
             echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath, "current" => array("posts", "add")));
         }
@@ -74,10 +77,15 @@ class PostController extends Controller
         $data['featuredImage'] = $this->uploadImage();
         $data['creationDate'] = date('Y-m-d H:i');
         $data['creatorId'] = $this->currentUser->id();
+        if(!empty($this->errors)) {
+            $this->createPostAction();
+            return;
+        }
         return $this->model->create($data);
     }
 
     public function editPostAction($id) {
+        UserController::whenCurrentUserAccessBackend();
         $post = new Post($this->model()->getSingle($id));
         if(!$post->isValid()) {
             $this->errors['undefined'] = "Le post #$id n'existe pas";
@@ -114,6 +122,7 @@ class PostController extends Controller
     }
 
     public function deletePostAction($id) {
+        UserController::whenCurrentUserAccessBackend();
         if($this->deletePost($id)) {
             header('Location: /backend/posts');
         }
@@ -135,6 +144,7 @@ class PostController extends Controller
     }
 
     public function trashPostAction($id) {
+        UserController::whenCurrentUserAccessBackend();
         if($this->trash($id)) {
             header('Location: /backend/posts');
         };
@@ -145,6 +155,7 @@ class PostController extends Controller
     }
 
     public function publishPostAction($id) {
+        UserController::whenCurrentUserAccessBackend();
         if($this->publish($id)) {
             header('Location: /backend/posts');
         }
@@ -157,16 +168,17 @@ class PostController extends Controller
     private function changeStatus($id, $status) {
         if(UserController::isCurrentUserAdmin()) {
             $user = new User(unserialize($_SESSION['user']));
-            // if ($user->isValid()) {
-            if($user != false) {
+            if ($user->isValid()) {
                 $post = new Post($this->model->getSingle($id));
                 if($this->model->changeStatus($post->id(), $status)) {
                     return true;
                 }
                 else {
-                    throw new \Exception("Impossible de changer le statut.");
+                    $this->errors['status_unchangeable'] = "Impossible de changer le statut du Post";
+                    return false;
                 }
             }
+            $this->errors['undefined'] = "Le Post #" . $id . " n'existe pas";
             return false;
         }
         return false;
@@ -219,7 +231,7 @@ class PostController extends Controller
         try {
             $file->upload();
         } catch (\Exception $e) {
-            print_r($file->getErrors());
+            $this->errors['featuredImage'] = 'Upload impossible';
         }
         return $file->getNameWithExtension();
     }
