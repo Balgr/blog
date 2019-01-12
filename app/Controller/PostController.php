@@ -178,7 +178,8 @@ class PostController extends Controller
      * Shows $limit number of Posts.
      */
     public function indexAction($limit = PostModel::NO_LIMIT) {
-        $posts = $this->model->getAllBy(Post::POST_STATUS_PUBLISHED, $limit);
+        //$posts = $this->model->getAllBy(Post::POST_STATUS_PUBLISHED, $limit);
+        $posts = $this->getPosts(Post::POST_STATUS_PUBLISHED, $limit);
         echo $this->twig->render("frontend/posts/index.html.twig", array("posts" => $posts, "currentUser" => $this->currentUser));
     }
 
@@ -217,10 +218,10 @@ class PostController extends Controller
 
         try {
             $file->upload();
-            return $file->getNameWithExtension();
         } catch (\Exception $e) {
             print_r($file->getErrors());
         }
+        return $file->getNameWithExtension();
     }
 
 
@@ -233,6 +234,8 @@ class PostController extends Controller
         $posts = [];
         foreach($data as $postData) {
             $post= new Post($postData);
+            $content = str_replace('&amp;', '&', $post->content());
+            $post->setContent(html_entity_decode($content));
             $post->setAuthor($this->model->getAuthor($post->id()));
             $post->setCommentsNb($this->commentController->getNumberOfComments($post->id()));
             $posts[] = $post;
@@ -259,7 +262,7 @@ class PostController extends Controller
 
     private function validateAndSanitizePostData()
     {
-        if(empty($_POST['title']) OR empty($_POST['subtitle']) OR empty($_POST['content'])) {
+        if(empty($_POST['title']) || empty($_POST['subtitle']) || empty($_POST['content'])) {
             $this->errors['empty'] = 'Veuillez remplir tous les champs';
         }
         else {
@@ -270,14 +273,14 @@ class PostController extends Controller
             }
 
             // Checks subtitle
-            $_POST['subtitle'] = htmlspecialchars($_POST['subtitle']);
+            $_POST['subtitle'] = htmlentities($_POST['subtitle']);
             $_POST['subtitle'] = filter_var($_POST['subtitle'], FILTER_SANITIZE_STRING);
             if (!preg_match('/^.{5,}$/', $_POST['subtitle'])) {
                 $this->errors['subtitle'] = 'Le sous-titre doit contenir plus de 5 caractères.';
             }
 
             // Checks content
-            $_POST['content'] = htmlspecialchars($_POST['content']);
+            $_POST['content'] = htmlentities($_POST['content']);
             //$_POST['content'] = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
             /*if (!preg_match('/^.{100,}$', $_POST['content']) && (strlen(trim($_POST['content'])) !== 0)) {
                 $this->errors['content'] = 'Le post doit contenir au moins 100 caractères.';

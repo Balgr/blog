@@ -209,7 +209,7 @@ class CommentController extends Controller
 
     private function validateAndSanitizePostData()
     {
-        if(empty($_POST['authorName']) OR empty($_POST['authorEmail']) OR empty($_POST['content']) OR empty($_POST['postId'])) {
+        if(empty($_POST['authorName']) || empty($_POST['authorEmail']) || empty($_POST['conte   nt']) || empty($_POST['postId'])) {
             $this->errors['empty'] = 'Veuillez remplir tous les champs';
         }
         else {

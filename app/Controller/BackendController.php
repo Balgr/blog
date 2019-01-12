@@ -27,19 +27,22 @@ class BackendController extends Controller
         $this->userController = new UserController();
         $this->commentController = new CommentController();
         $this->postController = new PostController();
-        if(!isset($_SESSION['user'])) {
-            throw new \Exception("Non connecté.");
-        }
-        else {
-            $this->currentUser = UserController::currentUser();
-            if(!$this->currentUser->isAdmin()) {
-                // REDIRECTION DROITS INSUFFISANTS
-                throw new \Exception("Droits insuffisants.");
-            }
-        }
+
+        $this->checkIfUserConnectedAndAdmin();
     }
 
     public function showHomeAction() {
         echo $this->twig->render("backend/home.html.twig", array("currentUser" => $this->currentUser, "current" => array("home")));
+    }
+
+    public static function checkIfUserConnectedAndAdmin() {
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+        }
+        if(!UserController::currentUser()->isAdmin()) {
+            //$errorController = new ErrorController();
+            //$errorController->show403Action();
+            header('Location: /forbidden');
+        }
     }
 }

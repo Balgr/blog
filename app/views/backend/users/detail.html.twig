@@ -43,9 +43,9 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Catégorie</label>
                             <div class="col-md-9">
-                                <select class="custom-select form-control">
-                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_MEMBER') %}selected{% endif %} value="{{ constant('Blog\\app\\Entity\\User::STATUS_MEMBER') }}">Membre</option>
-                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_ADMIN') %}selected{% endif %} value="{{ constant('Blog\\app\\Entity\\User::STATUS_ADMIN') }}">Administrateur</option>
+                                <select name="category" class="custom-select form-control">
+                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_ADMIN') %}selected{% endif %} value={{ constant('Blog\\app\\Entity\\User::STATUS_ADMIN') }}>{{ constant('Blog\\app\\Entity\\User::STATUS_ADMIN') }}Administrateur</option>
+                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_MEMBER') %}selected{% endif %} value="{{ constant('Blog\\app\\Entity\\User::STATUS_MEMBER') }}"> {{ constant('Blog\\app\\Entity\\User::STATUS_MEMBER') }}Membre</option>
                                 </select>
                             </div>
                         </div>

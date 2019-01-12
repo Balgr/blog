@@ -60,6 +60,10 @@ try {
     // HOME
     $router->get('/', 'Home#showHomePageAction');
     $router->post('/', 'Home#showHomePageAction');
+    $router->get('/not_found', 'Error#show404Action');
+    $router->post('/not_found', 'Error#show404Action');
+    $router->get('/forbidden', 'Error#show403Action');
+    $router->post('/forbidden', 'Error#show403Action');
 
     // BACKEND
     $router->get('/backend', 'Backend#showHomeAction');
@@ -94,5 +98,5 @@ try {
 
     $router->run();
 } catch(Exception $e) {
-    echo "Erreur ! " . $e->getMessage();
+    $router->throwError('404');
 }

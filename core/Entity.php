@@ -7,7 +7,6 @@
  */
 
 namespace Blog\core;
-require('Hydrator.php');
 
 /**
  * Class Entity

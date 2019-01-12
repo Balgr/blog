@@ -17,7 +17,7 @@ class Autoloader {
     /**
      * Registers class to autoload
      */
-    static function register() {
+    public static function register() {
         spl_autoload_register(array(__CLASS__, 'autoload'));
     }
 
@@ -26,7 +26,7 @@ class Autoloader {
      * For each $class that must be loaded, this function gets the Class path (it loads the file located at
      * "Namespace/Path/To/Class" by deleting everything before the first '/'.
      */
-    static function autoload($class) {
+    public static function autoload($class) {
 
         $class = str_replace('\\', '/', $class);
         $class = substr($class, strpos($class, '/'), strlen($class)-1);

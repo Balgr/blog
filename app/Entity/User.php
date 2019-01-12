@@ -30,10 +30,10 @@ class User extends Entity
     }
 
     public function isAdmin() {
-        if($this->category === self::STATUS_ADMIN) {
-            return false;
+        if(intval($this->category) == self::STATUS_ADMIN) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**

@@ -98,11 +98,12 @@ class Router {
     // TODO : Redirect to 404 or 403 page instead of throwing an Exception.
     private function notFound()
     {
-        throw new \Exception("404 NOT FOUND.");
+        echo "Suis là";
+        header('Location: /not_found');
     }
 
     private function forbidden()
     {
-        throw new \Exception("403 Forbidden.");
+        header('Location: /forbidden');
     }
 }

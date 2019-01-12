@@ -38,10 +38,9 @@ class UserController extends Controller
         $this->postModel = new PostModel($this->model()->db());
 
         // Retrieves the current logged-in User data and stores them
-        if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+        if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
             $this->currentUser = unserialize($_SESSION['user']);
-        }
-        else {
+        } else {
             $this->currentUser = false;
         }
 
@@ -49,7 +48,7 @@ class UserController extends Controller
             $this->validateAndSanitizePostData();
         }
 
-        if(!isset($_SESSION)) {
+        if (!isset($_SESSION)) {
             session_start();
         }
     }
@@ -61,7 +60,8 @@ class UserController extends Controller
     /**
      * Prints the list of users
      */
-    public function showListUsersAction() {
+    public function showListUsersAction()
+    {
         $users = $this->model->getAll();
         echo $this->twig->render("backend/users/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "users" => $users, "current" => array("users", "list")));
     }
@@ -70,8 +70,9 @@ class UserController extends Controller
      * Creates a new User in the databases if the current user posts data.
      * Else, shows the form to add a new user
      */
-    public function createUserAction() {
-        if($_SERVER['REQUEST_METHOD'] === 'POST' AND empty($this->errors())) {
+    public function createUserAction()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' AND empty($this->errors())) {
             $this->addUser($_POST);
             header('Location: /backend/users/');
         }
@@ -82,37 +83,40 @@ class UserController extends Controller
     private function addUser($data)
     {
         $data['dateInscription'] = date('Y-m-d H:i');
+        $data['password'] = password_hash($data['password'], PASSWORD_ARGON2I);
         return $this->model->create($data);
     }
 
-    public function editUserAction($id) {
+    public function editUserAction($id)
+    {
         $user = new User($this->model()->getSingle($id));
-        if($user->isValid()) {
+        if ($user->isValid()) {
             // Si GET : formulaire
-            if($_SERVER['REQUEST_METHOD'] == 'GET') {
+            if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user, "current" => array("users", "list")));
             }
-            if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($this->errors)) {
+            if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($this->errors)) {
                 $this->editUser($_POST, $id);
                 header('Location: /backend/users/');
             }
-        }
-        else {
+        } else {
             $this->errors['undefined'] = "L'utilisateur #$id n'existe pas";
             $this->showListUsersAction();
         }
         throw new \Exception('Utilisateur inexistant');
     }
 
-    private function editUser($data, $id) {
-        if(is_null($data['password']) || empty($data['password'])) {
+    private function editUser($data, $id)
+    {
+        if (is_null($data['password']) || empty($data['password'])) {
             unset($data['password']);
         }
         return $this->model->update($data);
     }
 
-    public function deleteUserAction($id) {
-        if($this->deleteUser($id)) {
+    public function deleteUserAction($id)
+    {
+        if ($this->deleteUser($id)) {
             header('Location: /backend/users');
         }
     }
@@ -128,11 +132,11 @@ class UserController extends Controller
         return false;
     }
 
-    public function profileAction() {
-        if($this->currentUser != false) {
+    public function profileAction()
+    {
+        if ($this->currentUser != false) {
             $this->editProfileAction($this->currentUser->id());
-        }
-        else {
+        } else {
             throw new Exception("Erreur : vous n'êtes pas connecté.");
         }
     }
@@ -142,7 +146,7 @@ class UserController extends Controller
      */
     public function registerAction()
     {
-        if($this->currentUser != false){
+        if ($this->currentUser != false) {
             header('Location: /');
         }
 
@@ -153,13 +157,10 @@ class UserController extends Controller
                     "user" => array("category" => $this->categories),
                     "errors" => $this->errors
                 ));
-        }
-        else {
-            if(empty($this->errors)) {
+        } else {
+            if (empty($this->errors)) {
                 $this->checkEmailAndUsernameInDatabase($_POST);
-            }
-
-            else {
+            } else {
                 echo $this->twig->render('frontend/register.html.twig',
                     array(
                         "user" => array("category" => $this->categories),
@@ -188,21 +189,21 @@ class UserController extends Controller
      * If the form has not been sent yet (no or empty $_POST), the form is displayed with the User data in it.
      * If the form has been sent ($_POST), the data is updated in the database, and the user is redirected to the showUser.
      */
-    public function editProfileAction($id = null) {
+    public function editProfileAction($id = null)
+    {
         $user = new User($this->model->getSingle($id));
         if (!isset($_POST) || empty($_POST)) {
             $user->setPassword('');
             echo $this->twig->render('frontend/profile.html.twig', array("currentUser" => $user));
-        }
-        else {
-            if(isset($_POST["password"]) && !empty($_POST["password"])) {
+        } else {
+            if (isset($_POST["password"]) && !empty($_POST["password"])) {
                 $_POST["password"] = password_hash($_POST['password'], PASSWORD_ARGON2I);
             }
             $userId = $this->model->update($_POST);
 
-            if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                 $user = unserialize($_SESSION["user"]);
-                if($user->id() === $userId) {
+                if ($user->id() === $userId) {
                     $user = new User($this->model->getSingle($userId));
                     $_SESSION['user'] = serialize($user);
                 }
@@ -213,14 +214,14 @@ class UserController extends Controller
     }
 
 
-    public function loginAction() {
+    public function loginAction()
+    {
         // If the User is already logged in...
-        if($this->currentUser != false){
+        if ($this->currentUser != false) {
             header("Location: /");
-        }
-        else {
+        } else {
             // Else, if the User sends a POST request, it means that he already completed the login form.
-            if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Checks if the User's username and password are not empty
                 $username = trim($_POST['username']);
                 $password = trim($_POST['password']);
@@ -230,29 +231,25 @@ class UserController extends Controller
                 }
                 if (empty($password)) {
                     $this->errors['password'] = "Empty password";
-                }
-
-                // If the username and password are provided...
+                } // If the username and password are provided...
                 else {
                     // Checks if the username exists in database
                     $user = new User($this->model->getByUsername($username));
 
                     // If the User exists in the database, checks if the provided username and password are correct
-                    if($user->isValid()) {
+                    if ($user->isValid()) {
                         if (password_verify($password, $user->password())) {
                             $_SESSION['user'] = serialize($user);
                             $_SESSION['logged_in'] = true;
                             header("Location: /");
                         } else {
-                            ///$this->errors['password'] = 'Mot de passe incorrect : ' . password_hash($password, PASSWORD_ARGON2I);
-                            $this->errors['password'] = 'Mot de passe incorrect : ';
+                            ///$this->errors['password'] = 'Mot de passe incorrect : '
+                            $this->errors['password'] = 'Mot de passe incorrect : '  .$password. ' - ' . password_hash($password, PASSWORD_ARGON2I);
                         }
-                    }
-                    /**
+                    } /**
                      * Else, redirects to the login page stating that the user does not exist.
                      */
-                    else
-                    {
+                    else {
                         $this->errors['unregistered'] = "Utilisateur inconnu.";
                     }
                 }
@@ -262,9 +259,10 @@ class UserController extends Controller
     }
 
 
-    public function logoutAction() {
+    public function logoutAction()
+    {
         // If the current User is logged in, it is logged out and redirected to the home page
-        if(isset($_SESSION['user'])) {
+        if (isset($_SESSION['user'])) {
             session_destroy();
         }
         // If the current User is not logged in, it is redirected to the home page
@@ -277,25 +275,23 @@ class UserController extends Controller
      * @return bool
      * @throws \Exception
      */
-    public static function isCurrentUserAdmin() {
-        if(!isset($_SESSION['user'])) {
-            throw new \Exception("No current user defined.");
-        }
-        $user = new User(unserialize($_SESSION['user']));
+    public static function isCurrentUserAdmin()
+    {
+        $user = self::currentUser();
         return $user->isAdmin();
     }
 
-    public static function currentUser() {
-        if(!isset($_SESSION['user'])) {
-            throw new \Exception("No current user defined.");
+    public static function currentUser()
+    {
+        if (!isset($_SESSION['user'])) {
+            header('/login');
         }
-        else {
-            $user = unserialize($_SESSION['user']);
-            return $user;
-        }
+        $user = unserialize($_SESSION['user']);
+        return $user;
     }
 
-    private function checkEmailAndUsernameInDatabase($array) {
+    private function checkEmailAndUsernameInDatabase($array)
+    {
         $emailUsed = $this->model->isEmailAlreadyRegistered(htmlspecialchars($array['email']));
         $usernameUsed = $this->model->isUsernameAlreadyRegistered(htmlspecialchars($array['username']));
         if ($emailUsed || $usernameUsed) {
@@ -313,10 +309,9 @@ class UserController extends Controller
 
     private function validateAndSanitizePostData()
     {
-        if (empty($_POST['username']) OR empty($_POST['password']) OR empty($_POST['email'])) {
+        if (empty($_POST['username']) || empty($_POST['password']) || empty($_POST['email'])) {
             $this->errors['empty'] = 'Veuillez remplir tous les champs';
-        }
-        else {
+        } else {
             // Username
             $_POST['username'] = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
             if (!preg_match('/^[a-zA-Z0-9]{5,}/', $_POST['username'])) {
@@ -336,13 +331,13 @@ class UserController extends Controller
 
             // Catégorie
             $_POST['category'] = filter_var((int)$_POST['category'], FILTER_SANITIZE_NUMBER_INT);
-            if ($_POST['category'] != User::STATUS_ADMIN || $_POST['category'] != User::STATUS_MEMBER) {
-                $this->errors['category'] = 'Catégorie invalide.';
+            $_POST['category'] = intval($_POST['category']);
+            var_dump($_POST);
+            if ($_POST['category'] !== User::STATUS_ADMIN && $_POST['category'] !== User::STATUS_MEMBER) {
+                $this->errors['category'] = 'Catégorie invalide : ' . $_POST['category'];
             }
         }
     }
-
-
 
 
     /**
