@@ -225,7 +225,6 @@ class CommentController extends Controller
             }
 
             $_POST['content'] = strip_tags($_POST['content']);
-            var_dump($_POST['content']);
             if (!preg_match('/^.{15,}$', $_POST['content']) === FALSE) {
                 $this->errors['content'] = 'Le commentaire doit contenir au moins 15 caractères.';
             }

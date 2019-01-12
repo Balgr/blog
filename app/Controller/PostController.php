@@ -38,12 +38,9 @@ class PostController extends Controller
         // Sets the uploaded files path
         //$this->uploadPath = __DIR__ . '/../..' . Config::getConfigFromYAML(__DIR__ . '/../../config/config.yml')['posts']['upload_path'];
         $this->uploadPath = __DIR__ . '/../../public/uploads/posts/';
-        //var_dump(is_dir(__DIR__ . '/../../public/uploads/posts/'));
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            var_dump('OK');
             $this->validateAndSanitizePostData();
-            var_dump('OKay');
         }
     }
 
@@ -201,8 +198,6 @@ class PostController extends Controller
             // Decodes the Post content in HTML for rendering
             $post->setContent(html_entity_decode($post->content()));
 
-            var_dump($post->comments());
-
             echo $this->twig->render("frontend/posts/blog-details-2.html.twig", array("post" => $post, "currentUser" => $this->currentUser, "errors" => $errors));
         }
         else {
@@ -212,10 +207,8 @@ class PostController extends Controller
 
     private function uploadImage()
     {
-        var_dump($_FILES);
         $storage = new \Upload\Storage\FileSystem($this->uploadPath);
         $file = new \Upload\File('featuredImage', $storage);
-        var_dump($_POST);
 
         $validations = new \Upload\Validation\Mimetype(array('image/png', 'image/jpeg'));
         $size = new \Upload\Validation\Size('5M');
@@ -266,7 +259,6 @@ class PostController extends Controller
 
     private function validateAndSanitizePostData()
     {
-        var_dump($_POST['content']);
         if(empty($_POST['title']) OR empty($_POST['subtitle']) OR empty($_POST['content'])) {
             $this->errors['empty'] = 'Veuillez remplir tous les champs';
         }

@@ -25,7 +25,7 @@ abstract class Model
         try {
             $this->db->query('SELECT 1');
         } catch (\PDOException $e) {
-            die($e->getMessage());
+            echo "Erreur de connexion à la base de données : " . $e->getMessage();
         }
 
         /**
@@ -71,7 +71,6 @@ abstract class Model
 
         $req = "INSERT INTO " . $this->tableName . " (".$columnsInsert .") " . " VALUES (".$preparedString.")";
         // Insert the row
-        var_dump($req);
         $req = $this->db->pdo()->prepare($req);
         $req->execute(array_values($data));
 
