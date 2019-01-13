@@ -73,5 +73,7 @@ body {
     margin-left: 20px;
 }
 
-
-/*  TODO : change the signout on responsive */
+.signout {
+    margin-top: 40px;
+    text-align: center;
+}
