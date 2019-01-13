@@ -14,7 +14,7 @@ class UserModel extends Model
 
     public function getByUsername($username)
     {
-        $req = "SELECT * FROM " . $this->tableName . " WHERE username=?";
+        $req = "SELECT * FROM $this->tableName WHERE username=?";
         $req = $this->db->pdo()->prepare($req);
         $req->execute(array($username));
         return $req->fetch();
@@ -27,7 +27,7 @@ class UserModel extends Model
      */
     public function isEmailAlreadyRegistered($email)
     {
-        $req = "SELECT COUNT(*) FROM " . $this->tableName . " WHERE email=?";
+        $req = "SELECT COUNT(*) FROM $this->tableName WHERE email=?";
         $req = $this->db->pdo()->prepare($req);
         $req->execute(array($email));
         if($req->fetchColumn() != 0) {
@@ -43,7 +43,7 @@ class UserModel extends Model
      */
     public function isUsernameAlreadyRegistered($username)
     {
-        $req = "SELECT COUNT(*) FROM " . $this->tableName . " WHERE username=?";
+        $req = "SELECT COUNT(*) FROM $this->tableName WHERE username=?";
         $req = $this->db->pdo()->prepare($req);
         $req->execute(array($username));
         if($req->fetchColumn() != 0) {

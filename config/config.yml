@@ -1,3 +1,2 @@
 posts:
-  #upload_path: '/public/uploads/posts'
   upload_path: '/public/uploads/posts'

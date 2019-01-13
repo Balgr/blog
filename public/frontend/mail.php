@@ -46,3 +46,4 @@
         http_response_code(403);
         echo "Votre message n'a pas pu être envoyé, veuillez réessayer.";
     }
+

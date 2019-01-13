@@ -23,7 +23,7 @@ class PostModel extends Model
     public function changeStatus($id, $status)
     {
         // Builds the query string
-        $req = "UPDATE " . $this->tableName . " SET status=? WHERE id=?";
+        $req = "UPDATE $this->tableName  SET status=? WHERE id=?";
 
         // Updates the selected row
         $req = $this->db->pdo()->prepare($req);
@@ -37,37 +37,42 @@ class PostModel extends Model
     {
         $userModel = new UserModel($this->db());
         $users = $userModel->tableName;
-        $req = "SELECT $users.username, $users.email, $users.biography FROM $users INNER JOIN $this->tableName WHERE $users.id = $this->tableName.creatorId AND $this->tableName.id = $id";
+        $req = "SELECT $users.username, $users.email, $users.biography FROM $users INNER JOIN $this->tableName WHERE $users.id = $this->tableName.creatorId AND $this->tableName.id = ?";
+        $params = array($id);
 
-        return $this->db->query($req)->fetch();
-    }
-
-    public function getAuthorName($id)
-    {
-        $userModel = new UserModel($this->db());
-        $users = $userModel->tableName;
-        $req = "SELECT $users.username FROM $users INNER JOIN $this->tableName WHERE $users.id = $this->tableName.creatorId AND $this->tableName.id = $id";
-
-        return $this->db->query($req)->fetchColumn();
+        $req = $this->db->pdo()->prepare($req);
+        if($req->execute($params)) {
+            return $req->fetch(\PDO::FETCH_ASSOC);
+        }
+        return false;
     }
 
 
     public function getAllBy ($status = -1, $limit = -1) {
+        $params = array();
         $userModel = new UserModel($this->db());
         $usersTable = $userModel->tableName;
         $commentModel = new CommentModel($this->db());
         $commentTable = $commentModel->tableName;
-        $req = "SELECT $this->tableName.id, $this->tableName.title, $this->tableName.subtitle, $this->tableName.content, $this->tableName.creationDate, $this->tableName.featuredImage, $usersTable.username as author, COUNT($commentTable.id) as commentsNb FROM $this->tableName LEFT JOIN $usersTable ON $this->tableName.creatorId = $usersTable.id LEFT JOIN $commentTable ON $this->tableName.id = $commentTable.postId";
+        $req = "SELECT $this->tableName.id as idx, $this->tableName.title, $this->tableName.subtitle, $this->tableName.content, $this->tableName.creationDate, $this->tableName.featuredImage, $usersTable.username as author, COUNT($commentTable.id) as commentsNb FROM $this->tableName LEFT JOIN $usersTable ON $this->tableName.creatorId = $usersTable.id LEFT JOIN $commentTable ON $this->tableName.id = $commentTable.postId";
         // , COUNT($commentTable.id) as nbComments
         // AND $commentTable.postId = $this->tableName.id
         if($status !== -1) {
-            $req = $req . " WHERE $this->tableName.status=\"" . $status . "\"";
+            $req = $req . ' WHERE $this->tableName.status = ?';
+            $params[] = $status;
         }
-        $req = $req . " GROUP BY $this->tableName.id";
+
+        $req = $req . " GROUP BY idx";
+
         if($limit !== -1) {
-            $req = $req . " LIMIT " .$this->limit;
+            $req = $req . " LIMIT ?";
+            $params[] = $limit;
         }
-        $data = $this->db->pdo()->query($req);
-        return $data->fetchAll();
+
+        $req = $this->db->pdo()->prepare($req);
+        if($req->execute($params)) {
+            return $req->fetchAll();
+        }
+        return false;
     }
 }

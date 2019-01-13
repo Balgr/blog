@@ -17,21 +17,23 @@ use mysql_xdevapi\Exception;
 class CommentModel extends Model
 {
     public function getComments($status = null, $limit = null) {
-        $req = "SELECT * FROM " . $this->tableName;
+        $req = "SELECT * FROM $this->tableName";
+        $params = [];
 
         if(!is_null($status)) {
-            $req .= " WHERE status = " . $status;
+            $req .= " WHERE status = ?";
+            $params[] = $status;
+
         }
         if($limit != CommentModel::NO_LIMIT) {
-            $req .= ' LIMIT ' . $limit;
+            $req .= ' LIMIT ?';
+            $params[] = $limit;
         }
+        $req = $this->db->pdo()->prepare($req);
 
-        $data = $this->db->pdo()->query($req);
-
-        if(!is_bool($data)) {
-            return $data->fetchAll();
+        if($req->execute($params)) {
+            return $req->fetchAll();
         }
-
         else {
             throw new \Exception("Erreur : requête");
         }
@@ -39,7 +41,7 @@ class CommentModel extends Model
 
     public function moderateComment($id, $newStatus) {
         // Updates the Comment row
-        $req = "UPDATE " . $this->tableName . " SET status=? WHERE id=?";
+        $req = "UPDATE $this->tableName SET status=? WHERE id=?";
         $req = $this->db->pdo()->prepare($req);
         $data = $req->execute(array($newStatus, $id));
 
@@ -55,7 +57,7 @@ class CommentModel extends Model
 
     public function getAllByPost($postId, $limit)
     {
-        $req = "SELECT * FROM " . $this->tableName . " WHERE postId = ?";
+        $req = "SELECT * FROM $this->tableName WHERE postId = ?";
         $req = $this->db->pdo()->prepare($req);
         $req->execute(array($postId));
         $data = $req->fetchAll();

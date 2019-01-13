@@ -38,7 +38,7 @@ abstract class Model
     }
 
     public function getSingle ($id) {
-        $req = "SELECT * FROM " . $this->tableName . " WHERE id=?";
+        $req = "SELECT * FROM $this->tableName WHERE id=?";
         $req = $this->db->pdo()->prepare($req);
         $req->execute(array($id));
         return $req->fetch();
@@ -46,9 +46,9 @@ abstract class Model
 
 
     public function getAll ($status = -1, $limit = -1) {
-        $req = "SELECT * FROM " . $this->tableName;
+        $req = "SELECT * FROM $this->tableName";
         if($status != -1) {
-            $req .=  " WHERE $this->tableName.status = '$status'";
+            $req .=  " WHERE status = '$status'";
         }
         if($limit != -1) {
             $req = $req . " LIMIT " .$this->limit;
@@ -69,7 +69,7 @@ abstract class Model
         $columnsInsert = implode(", ", array_keys($data));
         $preparedString = rtrim(str_repeat('?,', count($data)), ',');
 
-        $req = "INSERT INTO " . $this->tableName . " (".$columnsInsert .") " . " VALUES (".$preparedString.")";
+        $req = "INSERT INTO $this->tableName (".$columnsInsert .") " . " VALUES (".$preparedString.")";
         // Insert the row
         $req = $this->db->pdo()->prepare($req);
         $req->execute(array_values($data));
@@ -99,7 +99,7 @@ abstract class Model
             $preparedData .= $key . '= ?, ';
         }
         $preparedData = rtrim($preparedData, ', ');
-        $req = "UPDATE ". $this->tableName . " SET " . $preparedData . " WHERE id=" . $id . ' ';
+        $req = "UPDATE $this->tableName SET " . $preparedData . " WHERE id=" . $id . ' ';
 
         // Updates the selected row
         $req = $this->db->pdo()->prepare($req);
@@ -116,7 +116,7 @@ abstract class Model
      *
      */
     public function delete($id) {
-        $req = "DELETE FROM " . $this->tableName . " WHERE id=" . $id;
+        $req = "DELETE FROM $this->tableName WHERE id=" . $id;
         echo $req;
 
         return $this->db->query($req);
