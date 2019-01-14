@@ -6,7 +6,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="icon" href="/public/backend/images/favicon.ico">
-	<title>Medialoot Bootstrap 4 Dashboard Template</title>
+	<title>{% block title %}{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/public/backend/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -38,5 +38,6 @@
 		</div>
 	</div>
 	{% include 'backend/scripts.html.twig' %}
+{% block script %}{% endblock %}
 </body>
 </html>

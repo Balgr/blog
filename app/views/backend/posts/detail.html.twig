@@ -1,10 +1,18 @@
 {% extends 'backend/layout.html.twig' %}
 
+    {% block title %}Tableau de bord - {%  if post is not null %}Edition du post {{ post.id }}{% else %}Nouveau post{% endif %}{% endblock %}
+
+
     {% block content %}
         <div class="col-md-12 col-lg-8">
             <div class="card mb-4">
                 <div class="card-block">
-                    <h3 class="card-title">{%  if post is not null %}Edition{% else %}Nouveau post{% endif %}</h3>
+                    <h3 class="card-title">{%  if post is not null %}Edition du post #{{ post.id }}{% else %}Nouveau post{% endif %}</h3>
+                    <div class="errors-form">
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
                     <!-- Actual form -->
                     <form action="" method="post" enctype="multipart/form-data">
                         {% if post is not null %} <input type="hidden" name="id" class="form-control" value="{{ post.id }}"> {% endif %}
@@ -23,11 +31,11 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Contenu</label>
                             <div class="col-md-9">
-                                <textarea name="content" class="form-control">{{ post.content }}</textarea>
+                                <textarea name="content" id="post-content" class="form-control" rows="15" cols="80">{{ post.content|raw }}</textarea>
                             </div>
                         </div>
                         <div class="form-group row">
-                            {% if post is not null %}
+                            {% if featuredImage is not null %}
                             <div class="featured-image">
                                 <img src="{{ imgPath }}{{ post.featuredImage }}" alt="Featured Image" width="200" height="150"/>
                             </div>
@@ -43,10 +51,17 @@
                                <input type="text" name="lastEditReason" class="form-control">
                             </div>
                         </div>{% endif %}
-                        <!-- TODO : ajouter le fichier image -->
                         <input type="submit" value="Créer">
                     </form>
                 </div>
             </div>
         </div>
     {% endblock %}
+
+{% block script %}
+    <script>
+        // Replace the <textarea id="editor1"> with a CKEditor
+        // instance, using default configuration.
+        CKEDITOR.replace( 'post-content' );
+    </script>
+{% endblock %}

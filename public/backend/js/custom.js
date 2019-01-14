@@ -3,8 +3,6 @@ $(document).on("click","ul.nav li.parent > a ", function(){
 });
 $(".sidebar span.icon").find('em:first').addClass("fa-plus");
 
-$('#calendar').datepicker({
-});
 
 $("#menu-toggle").click(function(e) {
     e.preventDefault();

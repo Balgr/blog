@@ -64,4 +64,16 @@ body {
     color: red !important;
 }
 
-/*  TODO : change the signout on responsive */
+.nav-item a {
+    font-size: .9em;
+}
+
+.sub-nav-item a {
+    font-size: .6em !important;
+    margin-left: 20px;
+}
+
+.signout {
+    margin-top: 40px;
+    text-align: center;
+}

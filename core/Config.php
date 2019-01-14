@@ -6,16 +6,13 @@
  * Time: 12:34
  */
 
-namespace Core;
+namespace Blog\core;
 
 use Symfony\Component\Yaml\Yaml;
 
 
 abstract class Config
 {
-    // For testing purposes. The URL must be change to a __DIR__ path.
-    const PATH_CONFIG = "http://localhost/OpenClassrooms/projet-5/blog";
-
     /**
      * @param $filename : string
      * @return mixed
@@ -23,6 +20,4 @@ abstract class Config
     public static function getConfigFromYAML($filename) {
         return Yaml::parseFile((string) $filename);
     }
-
-    // TODO : getConfigFromXML($filename);
 }

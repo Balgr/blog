@@ -1,0 +1,9 @@
+Post:
+  indexLimit: -1
+
+User:
+  indexLimit: -1
+
+Comment:
+  indexLimit: -1
+

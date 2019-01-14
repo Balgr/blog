@@ -1,11 +1,10 @@
 {% extends 'frontend/layouts/layout.html.twig' %}
 
-{% block title %}Farem | Blog{% endblock %}
+{% block title %}Farem - Blog{% endblock %}
 
 {% block breadcrumb %}
     {% include 'frontend/breadcrumbs/posts/index.html.twig' %}
 {% endblock %}
-
 
 {% block content %}
 <div class="blog-area pt-80 pb-80 gray-bg-4 container-padding-res">
@@ -28,13 +27,13 @@
                         <div class="blog-content-2">
                             <div class="blog-meta-3">
                                 <ul>
-                                    <li>{{ post.author }}</li>
+                                    <li>{{ post.author.username }}</li>
                                     <li>{{ post.creationDate|date('d/m/Y') }}</li>
                                     <li><a href="/posts/{{ post.id }}#comments">{{ post.commentsNb }} <i class="ti-comment-alt"></i></a></li>
                                 </ul>
                             </div>
                             <h4><a href="/posts/{{ post.id }}">{{ post.title }}</a></h4>
-                            <p>{{ post.content|length > 50 ? post.content|slice(0, 200) ~ '...' : post.content }} </p>
+                            <p>{{ post.content|length > 50 ? post.content|slice(0, 200)|striptags ~ '...' : post.content|striptags }} </p>
                         </div>
                     </div>
                 </div>

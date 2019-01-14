@@ -1,16 +1,31 @@
 {% extends 'frontend/layouts/layout.html.twig' %}
 
-{% block breadcrumb %}
+    {% block title %}Farem - Contact{% endblock %}
 
+
+{% block breadcrumb %}
+    <div class="breadcrumb-area bg-img pt-230 pb-152" style="background-image: url(/public/frontend/img/banner/breadcrumb-contact.jpg);">
+        <div class="container">
+            <div class="breadcrumb-content breadcrumb-white text-center">
+                <h2>Contact</h2>
+                <ul>
+                    <li>
+                        <a href="/"> Accueil </a>
+                    </li>
+                    <li class="active"> Contact </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
         {% block content %}
         <div class="contact-area pt-15">
-            <div class="container-fluid">
+            <!--<div class="container-fluid">
                 <div class="contact-map">
                     <div id="map"></div>
                 </div>
-            </div>
+            </div>-->
             <div class="pt-120 pb-120">
                 <div class="container">
                     <div class="row">
@@ -26,7 +41,7 @@
                                             <i class="ti-mobile"></i>
                                         </div>
                                         <div class="contact-info-content">
-                                            <p>+33 7 XX XX XX XX</p>
+                                            <p>+33 7 72 13 91 74</p>
                                         </div>
                                     </div>
                                     <div class="single-contact-info">
@@ -34,7 +49,7 @@
                                             <i class="ti-email"></i>
                                         </div>
                                         <div class="contact-info-content">
-                                            <p><a href="../../../index.php">mehdi@farem.tech</a></p>
+                                            <p><a href="mailto:mehdi@farem.tech">mehdi@farem.tech</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -60,7 +75,7 @@
         {% endblock %}
         
 		
-		{% block script %}
+        {#{% block script %}
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzcEM8z2_imGO8TMRmJEpDEahvZ7KYY_U"></script>
         <script>
             function init() {
@@ -162,4 +177,4 @@
             }
             google.maps.event.addDomListener(window, 'load', init);
 		</script>
-{% endblock %}
+{% endblock %}#}

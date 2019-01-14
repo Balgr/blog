@@ -1,5 +1,8 @@
 {% extends 'backend/layout.html.twig' %}
 
+    {% block title %}Tableau de bord - {%  if user is not null %}Edition de l'utilisateur {{ user.id }}{% else %}Nouvel utilisateur{% endif %}{% endblock %}
+
+
     {% block content %}
         <div class="col-md-12 col-lg-8">
             <div class="card mb-4">
@@ -40,9 +43,10 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Catégorie</label>
                             <div class="col-md-9">
-                                <select class="custom-select form-control">
-                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_MEMBER') %}selected{% endif %} value="{{ constant('Blog\\app\\Entity\\User::STATUS_MEMBER') }}">Membre</option>
-                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_ADMIN') %}selected{% endif %} value="{{ constant('Blog\\app\\Entity\\User::STATUS_ADMIN') }}">Administrateur</option>
+                                <select name="category" class="custom-select form-control">
+                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_ADMIN') %}selected{% endif %} value={{ constant('Blog\\app\\Entity\\User::STATUS_ADMIN') }}>Administrateur</option>
+                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_MEMBER') %}selected{% endif %} value="{{ constant('Blog\\app\\Entity\\User::STATUS_MEMBER') }}">
+                                        Membre</option>
                                 </select>
                             </div>
                         </div>
