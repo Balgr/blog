@@ -1,0 +1,46 @@
+{% extends 'backend/layout.html.twig' %}
+
+    {% block content %}
+        <div class="col-md-12 col-lg-12">
+            <div class="card mb-4">
+                <div class="card-block">
+                    <h3 class="card-title">Commentaires</h3>
+                    {# <div class="dropdown card-title-btn-container">
+                        <button class="btn btn-sm btn-subtle" type="button"><em class="fa fa-list-ul"></em> View All</button>
+                        <button class="btn btn-sm btn-subtle dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><em class="fa fa-cog"></em></button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" href="#"><em class="fa fa-search mr-1"></em> More info</a>
+                            <a class="dropdown-item" href="#"><em class="fa fa-thumb-tack mr-1"></em> Pin Window</a>
+                            <a class="dropdown-item" href="#"><em class="fa fa-remove mr-1"></em> Close Window</a></div>
+                    </div> #}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Commentaire ID</th>
+                                <th>Post ID</th>
+                                <th>Contenu</th>
+                                <th>Auteur</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for comment in comments %}
+                                <tr>
+                                    <td>{{ comment.id }}</td>
+                                    <td><a href="/posts/{{ comment.postId }}">{{ comment.postId }}</a></td>
+                                    <td>{{ comment.content }}</td>
+                                    <td>{{ comment.authorName }}</td>
+                                    <td>{{ comment.status }}</td>
+                                    <td><a href="/backend/comments/trash/{{ comment.id }}"><em class="fa fa-trash"></em></a>
+                                        <a href="/backend/comments/delete/{{ comment.id }}"><em class="fa fa-minus-circle"></em></a>
+                                        <a href="/backend/comments/publish/{{ comment.id }}"><em class="fa fa-angle-right"></em></a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}

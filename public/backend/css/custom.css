@@ -1,0 +1,67 @@
+.sidebar .medialoot {
+    text-transform: uppercase;
+    font-size: .6rem;
+    letter-spacing: .2rem;
+    padding: .75rem 1rem;
+    color: white;
+    position: absolute;
+    bottom: 0px;
+    left: 20px;
+    width: 85%;
+    text-align: center;
+    border-radius: .3rem;
+}
+
+.sidebar .logout-button {
+    bottom: 40px;
+}
+.sidebar .fa, .sidebar .fa-bars{
+    color: white;
+}
+
+.sidebar a, .sidebar a:visited {
+    color: white;
+}
+
+.sidebar, #menu-toggle {
+    background-color: #454545;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #757575 !important;
+}
+
+header {
+    background-color: #454545;
+    color: white;
+    padding-top: 12px;
+}
+.page-header {
+    border: none;
+}
+
+@media screen and (max-width: 576px) {
+    .sidebar {
+        margin-bottom: 0;
+    }
+
+    .medialoot {
+        background-color: #757575;
+    }
+}
+
+a, a:visited {
+    font-family: "Arial", sans-serif;
+    color: black;
+}
+
+body {
+    font-family: "Arial", sans-serif;
+    color: black;
+}
+
+.errors-form p {
+    color: red !important;
+}
+
+/*  TODO : change the signout on responsive */
