@@ -84,7 +84,7 @@ class UserController extends Controller
     private function addUser($data)
     {
         $data['dateInscription'] = date('Y-m-d H:i');
-        $data['password'] = password_hash($data['password'], PASSWORD_ARGON2I);
+        $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
         return $this->model->create($data);
     }
 
@@ -115,7 +115,7 @@ class UserController extends Controller
         if (is_null($data['password']) || empty($data['password'])) {
             unset($data['password']);
         } else {
-            $data['password'] = password_hash($data['password'], PASSWORD_ARGON2I);
+            $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
         }
         return $this->model->update($data);
     }
@@ -179,7 +179,7 @@ class UserController extends Controller
             // Adds the User data not set in the form
             $_POST['dateInscription'] = date('Y-m-d H:i');
             $_POST['category'] = User::STATUS_MEMBER; // By default, a User is only a Member.
-            $_POST['password'] = password_hash($_POST['password'], PASSWORD_ARGON2I);
+            $_POST['password'] = password_hash($_POST['password'], PASSWORD_BCRYPT);
             $user = new User($this->model->getSingle($this->model->create($_POST)));
             $user->setPassword('');
             $_SESSION['user'] = serialize($user);
@@ -204,7 +204,7 @@ class UserController extends Controller
             echo $this->twig->render('frontend/profile.html.twig', array("currentUser" => $user));
         } else {
             if (isset($_POST["password"]) && !empty($_POST["password"])) {
-                $_POST["password"] = password_hash($_POST['password'], PASSWORD_ARGON2I);
+                $_POST["password"] = password_hash($_POST['password'], PASSWORD_BCRYPT);
             }
             $userId = $this->model->update($_POST);
 

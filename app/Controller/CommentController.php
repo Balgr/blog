@@ -7,7 +7,6 @@ use Blog\core\Controller;
 use Blog\app\Entity\Comment;
 use Blog\core\Config;
 use Blog\core\Database;
-use Twig\Error\Error;
 
 class CommentController extends Controller
 {
@@ -169,9 +168,8 @@ class CommentController extends Controller
 
 
     public function addAction() {
-       // UserController::whenCurrentUserAccessBackend();
         if(!isset($_POST)) {
-            $this->errors['empty'] = 'Veuillez envoyer le formulaire correctement.';
+            $this->errors['empty'] = 'Veuillez remplir le formulaire correctement.';
         }
         else {
 
