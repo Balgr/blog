@@ -4,7 +4,7 @@
 
 
     {% block content %}
-        <div class="col-md-12 col-lg-8">
+        <div class="col-md-12 col-lg-12">
             <div class="card mb-4">
                 <div class="card-block">
                     <h3 class="card-title">
@@ -24,7 +24,7 @@
                     </div> #}
                     {% if posts is not empty %}
                         <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-posts">
                             <thead>
                             <tr>
                                 <th>Post ID</th>
@@ -40,7 +40,11 @@
                                 <td>{{ post.id }}</td>
                                 <td><a href="/backend/posts/edit/{{ post.id }}">{{ post.title }}</a></td>
                                 <td>{{ post.author.username }}</td>
-                                <td>{{ post.status }}</td>
+                                <td>
+                                    {% if post.status == constant('Blog\\app\\Entity\\Post::POST_STATUS_PUBLISHED') %}Publié
+                                    {% elseif post.status == constant('Blog\\app\\Entity\\Post::POST_STATUS_TRASH') %}Corbeille
+                                    {% endif %}
+                                </td>
                                 <td><a href="/backend/posts/trash/{{ post.id }}"><em class="fa fa-trash"></em></a>
                                 <a href="/backend/posts/delete/{{ post.id }}"><em class="fa fa-minus-circle"></em></a>
                                 <a href="/backend/posts/publish/{{ post.id }}"><em class="fa fa-angle-right"></em></a></td>
@@ -52,14 +56,6 @@
                     {% else %}
                         <p>Aucun post à afficher.</p>
                     {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12 col-lg-4">
-            <div class="card mb-4">
-                <div class="card-block">
-                    <h3 class="card-title">Que faire ?</h3>
-                    <a href="/backend/posts/add">Nouveau post</a>
                 </div>
             </div>
         </div>

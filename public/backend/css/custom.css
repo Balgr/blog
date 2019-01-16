@@ -84,14 +84,32 @@ body {
 
 .page-header > div {
     margin-right: 1px;
-    margin-left²: 1px;
+    margin-left: 1px;
 }
 
-table.table-comment {table-layout:fixed; width:100%;}/*Setting the table width is important!*/
-table.table-comment th {overflow:hidden;}/*Hide text outside the cell.*/
-table.table-comment th:nth-of-type(1) {width:10%;}/*Setting the width of column 1.*/
-table.table-comment th:nth-of-type(2) {width:10%;}/*Setting the width of column 2.*/
-table.table-comment th:nth-of-type(3) {width:40%;}/*Setting the width of column 3.*/
-table.table-comment th:nth-of-type(4) {width:20%;}/*Setting the width of column 3.*/
-table.table-comment th:nth-of-type(5) {width:10%;}/*Setting the width of column 3.*/
-table.table-comment th:nth-of-type(6) {width:10%;}/*Setting the width of column 3.*/
+@media screen and (min-width: 992px) {
+    table.table-comments {table-layout:fixed; width:100%;}/*Setting the table width is important!*/
+    table.table-comments th {overflow:hidden;}/*Hide text outside the cell.*/
+    table.table-comments th:nth-of-type(1) {width:10%;}
+    table.table-comments th:nth-of-type(2) {width:10%;}
+    table.table-comments th:nth-of-type(3) {width:40%;}
+    table.table-comments th:nth-of-type(4) {width:20%;}
+    table.table-comments th:nth-of-type(5) {width:10%;}
+    table.table-comments th:nth-of-type(6) {width:10%;}
+
+    table.table-posts {table-layout:fixed; width:100%;}/*Setting the table width is important!*/
+    table.table-posts th {overflow:hidden;}/*Hide text outside the cell.*/
+    table.table-posts th:nth-of-type(1) {width:10%;}
+    table.table-posts th:nth-of-type(2) {width:40%;}
+    table.table-posts th:nth-of-type(3) {width:20%;}
+    table.table-posts th:nth-of-type(4) {width:20%;}
+    table.table-posts th:nth-of-type(5) {width:20%;}
+
+    table.table-users {table-layout:fixed; width:100%;}/*Setting the table width is important!*/
+    table.table-users th {overflow:hidden;}/*Hide text outside the cell.*/
+    table.table-users th:nth-of-type(1) {width:10%;}
+    table.table-users th:nth-of-type(2) {width:30%;}
+    table.table-users th:nth-of-type(3) {width:30%;}
+    table.table-users th:nth-of-type(4) {width:17%;}
+    table.table-users th:nth-of-type(5) {width:13%;}
+}
