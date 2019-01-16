@@ -114,6 +114,8 @@ class UserController extends Controller
     {
         if (is_null($data['password']) || empty($data['password'])) {
             unset($data['password']);
+        } else {
+            $data['password'] = password_hash($data['password'], PASSWORD_ARGON2I);
         }
         return $this->model->update($data);
     }
