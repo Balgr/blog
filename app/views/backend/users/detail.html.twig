@@ -7,7 +7,7 @@
         <div class="col-md-12 col-lg-8">
             <div class="card mb-4">
                 <div class="card-block">
-                    <h3 class="card-title">{%  if currentUser is not null %}Edition{% else %}Nouvel utilisateur{% endif %}</h3>
+                    <h3 class="card-title">{% if user is not null %}Edition{% else %}Nouvel utilisateur{% endif %}</h3>
                     <div class="errors-form">
                         {% for error in errors %}
                             <p>{{ error }}</p>
@@ -50,7 +50,7 @@
                                 </select>
                             </div>
                         </div>
-                        <input type="submit" value="Créer">
+                        <input type="submit" value="{% if user is not null %}Modifier{% else %}Créer{% endif %}">
                     </form>
                 </div>
             </div>

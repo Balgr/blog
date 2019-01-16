@@ -7,7 +7,9 @@
         <div class="col-md-12 col-lg-8">
             <div class="card mb-4">
                 <div class="card-block">
-                    <h3 class="card-title">Posts</h3>
+                    <h3 class="card-title">
+                        {% if current['1'] == 'list' %}Tous les posts
+                        {% else %}Posts à la corbeille{% endif %}</h3>
                     <div class="errors-form">
                         {% for error in errors %}
                             <p>{{ error }}</p>

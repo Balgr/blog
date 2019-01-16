@@ -77,3 +77,21 @@ body {
     margin-top: 40px;
     text-align: center;
 }
+
+.page-header > div > h1 {
+    text-align: center !important;
+}
+
+.page-header > div {
+    margin-right: 1px;
+    margin-left²: 1px;
+}
+
+table.table-comment {table-layout:fixed; width:100%;}/*Setting the table width is important!*/
+table.table-comment th {overflow:hidden;}/*Hide text outside the cell.*/
+table.table-comment th:nth-of-type(1) {width:10%;}/*Setting the width of column 1.*/
+table.table-comment th:nth-of-type(2) {width:10%;}/*Setting the width of column 2.*/
+table.table-comment th:nth-of-type(3) {width:40%;}/*Setting the width of column 3.*/
+table.table-comment th:nth-of-type(4) {width:20%;}/*Setting the width of column 3.*/
+table.table-comment th:nth-of-type(5) {width:10%;}/*Setting the width of column 3.*/
+table.table-comment th:nth-of-type(6) {width:10%;}/*Setting the width of column 3.*/

@@ -12,12 +12,12 @@
 {% block content %}
 
     <div class="blog-details-area pt-70 pb-80">
-        <div class="container">
+        <div class="container container-post">
             <div class="row">
-                <div class="col-lg-10 ml-auto mr-auto">
+                <div class="col-lg-10 ml-auto mr-auto blog-details-content">
                     <div class="blog-details-wrap blog-details-2 pl-50 pr-50">
                         <div class="b-details-content-wrap">
-                            <div class="blog-content-3 text-center mb-25">
+                            {# <div class="blog-content-3 text-center mb-25">
                                 <h4>{{ post.title }}</h4>
                                 <h5>{{ post.subtitle }}</h5>
                                 <div class="blog-meta-3">
@@ -28,17 +28,17 @@
                                         <li><a href="#comments">{{ post.comments|length }}</a></li>
                                     </ul>
                                 </div>
-                            </div>
+                            </div>#}
                             {% if post.lastEditReason is not null %}
                                 <div class="edited-information">
-                                    <p><b>Dernière édition</b> le {{ post.lastEditDate|date('j/m/Y') }} pour le motif : {{ post.lastEditReason }}</p><br><br>
+                                    <p><b>Dernière édition</b> le {{ post.lastEditDate|date('j/m/Y') }}{% if post.lastEditReason is not empty %} pour le motif : {{ post.lastEditReason }}{% endif %}.</p>
                                 </div>
                             {% endif %}
                             {{ post.content|raw }}
                             <div class="b-details-author mt-45 mb-50 pt-55 pb-60 border-bottom-4 border-top-5">
-                                <div class="b-details-author-img">
+                                {#<div class="b-details-author-img">
                                     <img alt="" src="/public/frontend/img/blog/blog-author-2.png">
-                                </div>
+                                </div>#}
                                 <div class="b-details-content">
                                     <h5>{{ post.author.username }}</h5>
                                     <p>{{ post.author.biography }}</p>
@@ -48,38 +48,36 @@
                                 {% include 'frontend/posts/comment-list.html.twig' %}
                             </div>
                             <div class="blog-reply-area pt-45">
-                                <h4 class="blog-details-title">Leave A Reply</h4>
+                                <h4 class="blog-details-title">Laisser un commentaire</h4>
+                                {% if errors is not null and errors is not empty %}
                                 <div class="errors-form">
                                     {% for error in errors %}
                                         <p>{{ error }}</p>
                                     {% endfor %}
                                 </div>
+                                {% endif %}
                                 <div class="blog-form-wrapper custom-col-15">
                                     <form action="/posts/{{ post.id }}/comment" method="post">
                                         <input type="hidden" name="postId" value="{{ post.id }}">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="leave-form">
-                                                    {% if currentUser is not null  %}
-                                                        {{ currentUser.username }}
-                                                    {% else %}
-                                                        <input type="text" placeholder="Name" name="username">
+                                                    {% if currentUser is null  %}
+                                                        <input type="text" placeholder="Nom" name="authorName">
                                                     {% endif %}
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="leave-form">
-                                                    {% if currentUser is not null  %}
-                                                        {{ currentUser.email }}
-                                                    {% else %}
-                                                        <input type="text" placeholder="Email" name="email">
+                                                    {% if currentUser is null  %}
+                                                        <input type="text" placeholder="Email" name="authorEmail">
                                                     {% endif %}
                                                 </div>
                                             </div>
                                             <div class="col-md-12" style="padding-top: 10px">
                                                 <div class="text-leave">
                                                     <textarea placeholder="Commentaire..." name="content"></textarea>
-                                                    <input type="submit" value="Post Comment">
+                                                    <input type="submit" value="Poster">
                                                 </div>
                                             </div>
                                         </div>
