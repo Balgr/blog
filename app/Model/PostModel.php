@@ -54,7 +54,7 @@ class PostModel extends Model
         $usersTable = $userModel->tableName;
         $commentModel = new CommentModel($this->db());
         $commentTable = $commentModel->tableName;
-        $req = "SELECT $this->tableName.id as idx, $this->tableName.title, $this->tableName.subtitle, $this->tableName.content, $this->tableName.creationDate, $this->tableName.featuredImage, $usersTable.username as author, COUNT($commentTable.id) as commentsNb FROM $this->tableName LEFT JOIN $usersTable ON $this->tableName.creatorId = $usersTable.id LEFT JOIN $commentTable ON $this->tableName.id = $commentTable.postId";
+        $req = "SELECT $this->tableName.id as idx, $this->tableName.title, $this->tableName.subtitle, $this->tableName.content, $this->tableName.creationDate as creationDate, $this->tableName.featuredImage, $usersTable.username as author, COUNT($commentTable.id) as commentsNb FROM $this->tableName LEFT JOIN $usersTable ON $this->tableName.creatorId = $usersTable.id LEFT JOIN $commentTable ON $this->tableName.id = $commentTable.postId";
         // , COUNT($commentTable.id) as nbComments
         // AND $commentTable.postId = $this->tableName.id
         if($status !== -1) {
@@ -68,6 +68,8 @@ class PostModel extends Model
             $req = $req . " LIMIT ?";
             $params[] = $limit;
         }
+
+        $req = $req . " ORDER BY creationDate DESC";
 
         $req = $this->db->pdo()->prepare($req);
         if($req->execute($params)) {
