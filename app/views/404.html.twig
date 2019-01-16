@@ -2,11 +2,92 @@
 <head>
     <meta charset="UTF-8">
     <title>Farem - Page inexistante</title>
+    <link href="https://fonts.googleapis.com/css?family=Staatliches|Quicksand" rel="stylesheet">
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            color: #bfbfbf;
+            font-weight: bold;
+        }
+        a {
+            color: white;
+            text-align: center;
+        }
+        .background {
+            height: 100vh;
+            width: 100vw;
+            background-image: url("/public/frontend/404.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            /*filter: grayscale(50%) brightness(50%);
+            -webkit-filter: grayscale(50%) brightness(50%);*/
+            filter: grayscale(30%) brightness(30%);
+            -webkit-filter: grayscale(30%) brightness(30%);
+        }
+
+        .content-not-found {
+            text-align: center;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateY(-50%) translateX(-50%);
+        }
+        .content-not-found h1 {
+            font-family: Staatliches, sans-serif;
+            font-size: 200px;
+            z-index: -1;
+            letter-spacing: 50px;
+            color: white;
+        }
+
+
+
+        .letter-45 {
+            display: inline-block;
+            vertical-align: top;
+            /*transform: scaleX(1); /* Or also:   rotateY(180deg) */
+            transform: rotate({{ degres[0] }}deg);
+        }
+        .letter-13 {
+            display: inline-block;
+            vertical-align: top;
+            /*transform: scaleX(1); /* Or also:   rotateY(180deg) */
+            transform: rotate({{ degres[1] }}deg);
+        }
+        .letter-67 {
+            display: inline-block;
+            vertical-align: top;
+            /*transform: scaleX(1); /* Or also:   rotateY(180deg) */
+            transform: rotate({{ degres[2] }}deg);
+        }
+
+        .action-404 {
+            font-family: Quicksand, sans-serif;
+            font-size: 25px;
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+        }
+
+
+
+    </style>
 </head>
 
+
 <body>
-    <h1>Erreur 404 - Page non trouvée</h1>
-    <p>La page demandée n'existe pas.</p>
-    <p><a href="/">Retourner à l'accueil</a></p>
+<div class="background">
+
+</div>
+<div class="content-not-found">
+    <h1><span class="letter-45">4</span><span class="letter-13">0</span><span class="letter-67">4</span></h1>
+</div>
+<div class="action-404">
+    <p>Non, non, non... ! Vous faites fausse route !</p>
+    <p style="width: 250px; margin: auto;"><a href="/">Passez par la case départ, et touchez 20.000 francs</a></p>
+</div>
 </body>
 </html>
