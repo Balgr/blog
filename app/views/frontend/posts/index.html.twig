@@ -1,0 +1,46 @@
+{% extends 'frontend/layouts/layout.html.twig' %}
+
+{% block title %}Farem - Blog{% endblock %}
+
+{% block breadcrumb %}
+    {% include 'frontend/breadcrumbs/posts/index.html.twig' %}
+{% endblock %}
+
+{% block content %}
+<div class="blog-area pt-80 pb-80 gray-bg-4 container-padding-res">
+    <div class="container">
+        <div class="pro-col-40">
+            <div class="row grid" data-show="9" data-load="3">
+                {% for post in posts %}
+                <div class="col-lg-4 col-md-6 item-hidden grid-item">
+                    <div class="blog-wrap-2 blog-shadow mb-40">
+                        <div class="blog-img hover-3" style="background-image: url('/public/uploads/posts/{{ post.featuredImage }}');">
+                            <a href="/posts/{{ post.id }}"></a>
+                            <div class="readmore-icon">
+                                <a href="/posts/{{ post.id }}">
+                                    <i class="ti-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="blog-content-2">
+                            <div class="blog-meta-3">
+                                <ul>
+                                    <li>{{ post.author.username }}</li>
+                                    <li>{{ post.creationDate|date('d/m/Y') }}</li>
+                                    <li><a href="/posts/{{ post.id }}#comments">{{ post.commentsNb }} <i class="ti-comment-alt"></i></a></li>
+                                </ul>
+                            </div>
+                            <h4><a href="/posts/{{ post.id }}">{{ post.title }}</a></h4>
+                            <p>{{ post.content|length > 50 ? post.content|slice(0, 200)|striptags ~ '...' : post.content|striptags }} </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="pro-load-more load-more-border text-center mt-10">
+            <a class="load-more-toggle default-btn btn-hover" href="#">Charger plus de posts...</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+<nav class="sidebar col-xs-12 col-sm-4 col-lg-3 col-xl-2">
+    <h1 class="site-title"><a href="/backend"><em class="fa fa-rocket"></em> Farem</a></h1>
+
+    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><em class="fa fa-bars"></em></a>
+    <ul class="nav nav-pills flex-column sidebar-nav">
+        <li class="nav-item"><a {{ (current[0] == 'home') ? 'class="nav-link active"' : 'class="nav-link"' }} class="nav-link" href="/backend"> Dashboard <span class="sr-only">(current)</span></a></li>
+        <li class="nav-item"><a {{ (current[0] == 'posts') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/posts"> Posts</a></li>
+        <div class="under-nav-item">
+            <li class="sub-nav-item"><a {{ (current[0] == 'posts' and current[1] == 'list') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/posts"> Liste des Posts</a></li>
+            <li class="sub-nav-item"><a {{ (current[0] == 'posts' and current[1] == 'add') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/posts/add"> Nouveau Post</a></li>
+            <li class="sub-nav-item"><a {{ (current[0] == 'posts' and current[1] == 'trash') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/posts/trash"> Corbeille</a></li>
+        </div>
+        <li class="nav-item"><a {{ (current[0] == 'comments') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/comments"> Commentaires</a></li>
+        <div class="under-nav-item">
+            <li class="sub-nav-item"><a {{ (current[0] == 'comments' and current[1] == 'list') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/comments"> Tous les Commentaires</a></li>
+            <li class="sub-nav-item"><a {{ (current[0] == 'comments' and current[1] == 'moderate') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/comments/moderate"> Modération</a></li>
+            <li class="sub-nav-item"><a {{ (current[0] == 'comments' and current[1] == 'trash') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/comments/trash"> Corbeille</a></li>
+        </div>
+        <li class="nav-item"><a {{ (current[0] == 'users') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/users"> Utilisateurs</a></li>
+        <div class="under-nav-item">
+            <li class="sub-nav-item"><a {{ (current[0] == 'users' and current[1] == 'list') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/users"> Liste des Utilisateurs</a></li>
+            <li class="sub-nav-item"><a {{ (current[0] == 'users' and current[1] == 'add') ? 'class="nav-link active"' : 'class="nav-link"' }} href="/backend/users/add"> Nouvel Utilisateur</a></li>
+        </div>
+        <li class="nav-item signout"><a href="/logout"><em class="fa fa-power-off"></em> Déconnexion</a></li>
+    </ul>
+    <!--<div class="medialoot">
+        <a href="/logout" class="logout-button"><em class="fa fa-power-off"></em> Signout</a>
+        <div class="medialoot-credit">Template by <a href="https://www.medialoot.com">Medialoot</a></div>
+    </div>-->
+</nav>

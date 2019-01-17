@@ -1,0 +1,139 @@
+.action-login, .action-register, .action-logout, .action-backend, .action-profile {
+    color: white;
+}
+
+.label-profile {
+    margin: 0 15px 27px;
+}
+
+.description {
+    text-align: justify;
+}
+
+.description p{
+    color: white;
+}
+
+.logo-vertical {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
+
+#scrollUp {
+    border-radius: 100px;
+    background: #bdbdbd87 none repeat scroll 0 0;
+}
+
+@media screen and (max-width: 575px) {
+    .single-count4-content {
+        text-align: center;
+    }
+
+    .section-title-5 {
+        text-align: center;
+    }
+
+    .slider-text-7 {
+        text-align: center;
+    }
+}
+
+.copyright, .copyright-hm3 {
+    padding: 10px;
+}
+
+.errors-form p {
+    color: red !important;
+}
+
+
+div.login-register-tab-list.nav > a {
+    margin: auto;
+}
+
+.breadcrumb-post {
+    filter: grayscale(60%) brightness(56%) contrast(88%) hue-rotate(31deg);
+    -webkit-filter: grayscale(60%) brightness(56%) contrast(88%) hue-rotate(31deg);
+}
+
+.breadcrumb-post-details {
+    width: 100%;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+}
+
+.breadcrumb-post-details h2, .breadcrumb-post-details h3, .breadcrumb-post-details li, .breadcrumb-post-details a span{
+    color: white !important;
+}
+
+.breadcrumb-post-details .container {
+    position: absolute;
+    top: 50%; /* poussé de la moitié de hauteur du référent */
+    transform: translateY(-50%); /* tiré de la moitié de sa propre hauteur */
+    right: 0;
+    left: 0;
+}
+
+.b-details-author {
+    justify-content: flex-start;
+}
+
+
+#scrollUp {
+    background-color: #ffffffad;
+    bottom: 30px;
+}
+
+
+
+.edited-information {
+    margin-bottom: 30px;
+}
+
+
+
+.blog-details-area {
+    background-color: #f9f9f9;
+    padding-top: 0;
+}
+.blog-details-wrap {
+    background-color: white;
+    padding: 40px 35px 80px 35px !important;
+}
+
+.blog-details-content {
+    padding: 0;
+}
+
+@media screen and (min-width: 768px) {
+    .container-post {
+        max-width: 680px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .container-post {
+        max-width: 960px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .blog-details-area {
+        padding-top: 0;
+    }
+}
+
+.main-menu {
+    position: relative;
+}
+
+.blog-img {
+    width: 100%;
+    height: 250px;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+}
+

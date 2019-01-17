@@ -1,0 +1,50 @@
+{% extends 'frontend/layouts/layout.html.twig' %}
+
+    {% block title %}Farem - S'inscrire{% endblock %}
+
+
+{% block breadcrumb %}
+{% include 'frontend/breadcrumbs/users/login-register.html.twig' %}
+{% endblock %}
+
+
+
+{% block content %}
+
+    <div class="shortcode-login-regi-area pt-113 pb-120 black-bg-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-xl-6 col-md-12 col-12 ml-auto mr-auto">
+                    <div class="pl-65 pr-65">
+                        <div class="login-regi-wrapper">
+                            <div class="login-register-tab-list nav">
+                                <a class="active" data-toggle="tab" href="#register">
+                                    <h4> Register </h4>
+                                </a>
+                            </div>
+                            <div class="tab-content login-regi-content">
+                                <div id="register" class="tab-pane active">
+                                    <div class="login-register-form">
+                                        <div class="errors-form">
+                                            {% for error in errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                        <form action="/register" method="post">
+                                            <input type="text" name="username" placeholder="Pseudo">
+                                            <input type="password" name="password" placeholder="Mot de passe">
+                                            <input type="text" name="email" placeholder="Email">
+                                            <div class="submit-btn">
+                                                <button class="btn-hover" type="submit">S'inscrire</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

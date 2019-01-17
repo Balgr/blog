@@ -6,7 +6,7 @@
  * Time: 16:25
  */
 
-namespace Core;
+namespace Blog\core;
 
 trait Hydrator {
 

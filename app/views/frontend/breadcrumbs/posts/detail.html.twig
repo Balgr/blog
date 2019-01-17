@@ -1,0 +1,21 @@
+<div class="breadcrumb-wrapper">
+    <div class="breadcrumb-area bg-img pt-230 pb-152 breadcrumb-height breadcrumb-post" style="background-image: url(/public/uploads/posts/{{ post.featuredImage }});">
+    </div>
+
+    <div class="breadcrumb-post-details breadcrumb-area bg-img pt-230 pb-152 breadcrumb-height">
+        <div class="container container-post">
+            <div class="breadcrumb-content text-center">
+                <h2>{{ post.title }}</h2>
+                <h3>{{ post.subtitle }}</h3>
+                <div class="blog-meta-3">
+                    <ul>
+                        <!--<li>Brabding</li>-->
+                        <li>By <a href="#"><span>{{ post.author.username }}</span></a></li>
+                        <li>{{ post.creationDate|date('j/m/Y') }} </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

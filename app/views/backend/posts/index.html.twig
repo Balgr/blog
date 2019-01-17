@@ -1,0 +1,63 @@
+    {% extends 'backend/layout.html.twig' %}
+
+        {% block title %}Tableau de bord - Liste des posts{% endblock %}
+
+
+    {% block content %}
+        <div class="col-md-12 col-lg-12">
+            <div class="card mb-4">
+                <div class="card-block">
+                    <h3 class="card-title">
+                        {% if current['1'] == 'list' %}Tous les posts
+                        {% else %}Posts à la corbeille{% endif %}</h3>
+                    <div class="errors-form">
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {# <div class="dropdown card-title-btn-container">
+                        <button class="btn btn-sm btn-subtle" type="button"><em class="fa fa-list-ul"></em> View All</button>
+                        <button class="btn btn-sm btn-subtle dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><em class="fa fa-cog"></em></button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" href="#"><em class="fa fa-search mr-1"></em> More info</a>
+                            <a class="dropdown-item" href="#"><em class="fa fa-thumb-tack mr-1"></em> Pin Window</a>
+                            <a class="dropdown-item" href="#"><em class="fa fa-remove mr-1"></em> Close Window</a></div>
+                    </div> #}
+                    {% if posts is not empty %}
+                        <div class="table-responsive">
+                        <table class="table table-striped table-posts" id="table-posts">
+                            <thead>
+                            <tr>
+                                <th>Post ID</th>
+                                <th>Titre</th>
+                                <th>Auteur</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for post in posts %}
+                            <tr>
+                                <td>{{ post.id }}</td>
+                                <td><a href="/backend/posts/edit/{{ post.id }}">{{ post.title }}</a></td>
+                                <td>{{ post.author.username }}</td>
+                                <td>
+                                    {% if post.status == constant('Blog\\app\\Entity\\Post::POST_STATUS_PUBLISHED') %}Publié
+                                    {% elseif post.status == constant('Blog\\app\\Entity\\Post::POST_STATUS_TRASH') %}Corbeille
+                                    {% endif %}
+                                </td>
+                                <td><a href="/backend/posts/trash/{{ post.id }}"><em class="fa fa-trash"></em></a>
+                                <a href="/backend/posts/delete/{{ post.id }}"><em class="fa fa-minus-circle"></em></a>
+                                <a href="/backend/posts/publish/{{ post.id }}"><em class="fa fa-angle-right"></em></a></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <p>Aucun post à afficher.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+    

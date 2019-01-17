@@ -6,7 +6,7 @@
  * Time: 16:28
  */
 
-namespace Core;
+namespace Blog\core;
 
 use mysql_xdevapi\Exception;
 use PDO;
@@ -76,9 +76,8 @@ class Database
         {
             try {
                 $pdo = new PDO($data['dsn'], $data['username'], $data['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-                echo 'OK !';
             } catch (Exception $e) {
-                die($e->getMessage());
+                echo "Erreur de connexion à la base de données : veuillez vérifier les informations de connexion." . $e->getMessage();
             }
         }
 

@@ -1,0 +1,42 @@
+<footer class="footer-area pt-90 pb-90 black-bg-3 footer-hm7">
+    <div class="container">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="copyright copyright-hm3">
+                    <p>
+                        © 2018
+                        <a href="#">Farem</a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="footer-social-h3 text-center">
+                    <ul>
+                        <li><a href="http://facebook.com/mehdi.rafenne"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="https://twitter.com/MehdiRafenne"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="https://github.com/balgr/"><i class="fa fa-github"></i></a></li>
+                        <li><a href="https://www.linkedin.com/in/mehdi-rafenne/"><i class="fa fa-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="made-in f-right">
+                    <p>
+                        {% if currentUser is not null and currentUser != false%}
+                            {% if currentUser.category == constant('Blog\\app\\Entity\\User::STATUS_ADMIN') %}
+                                <a class="action-backend" href="/backend">Backend</a> |
+                            {% else %}
+                                <a class="action-profile" href="/profile">Profil</a> |
+                            {% endif %}
+                            <a class="action-login" href="/logout">Déconnexion ({{ currentUser.username }})</a>
+                        {% else %}
+                            <a class="action-login" href="/login">Connexion</a> / <a class="action-register" href="/register">S'inscrire</a>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

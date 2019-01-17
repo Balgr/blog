@@ -1,0 +1,26 @@
+<h4 class="blog-details-title text-center">Commentaires</h4>
+<div class="blog-comments-wrap" id="comments">
+    {% if post.comments is empty %}
+        <div class="comments-none">
+            <p>Aucun commentaire publié.</p>
+        </div>
+    {% else %}
+        {% for comment in post.comments %}
+            {% if comment.status == constant('Blog\\app\\Entity\\Comment::COMMENT_PUBLISHED') %}
+            <div class="single-blog-bundel">
+                <div class="single-blog-comment mb-60">
+                    <div class="blog-comment-img">
+                        <img alt="" src="/public/frontend/img/blog/blog-comment3.png">
+                    </div>
+                    <div class="blog-comment-content">
+                        <div class="comment-name-reply">
+                           <span>{{ comment.authorName }}</span>
+                        </div>
+                        {{ comment.content }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>

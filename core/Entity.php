@@ -6,8 +6,12 @@
  * Time: 10:30
  */
 
-namespace Core;
-require_once('Hydrator.php');
+namespace Blog\core;
+
+/**
+ * Class Entity
+ * @package Core
+ */
 
 abstract class Entity
 {

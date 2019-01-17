@@ -6,16 +6,37 @@
  * Time: 11:02
  */
 
-namespace App\Entity;
-use Core\Entity;
+namespace Blog\app\Entity;
+use Blog\core\Entity;
 
 class Comment extends Entity
 {
     private $authorName;
+    private $authorEmail;
     private $content;
     private $creationDate;
     private $status;
     private $postId;
+
+    const COMMENT_PUBLISHED = 0;
+    const COMMENT_IN_MODERATION = 1;
+    const COMMENT_TRASH = 2;
+
+    /**
+     * @return mixed
+     */
+    public function authorEmail()
+    {
+        return $this->authorEmail;
+    }
+
+    /**
+     * @param mixed $authorEmail
+     */
+    public function setAuthorEmail($authorEmail)
+    {
+        $this->authorEmail = $authorEmail;
+    }
 
 
     protected function isValid()
@@ -102,5 +123,4 @@ class Comment extends Entity
     {
         $this->postId = $postId;
     }
-
 }

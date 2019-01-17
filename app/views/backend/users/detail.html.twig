@@ -1,0 +1,58 @@
+{% extends 'backend/layout.html.twig' %}
+
+    {% block title %}Tableau de bord - {%  if user is not null %}Edition de l'utilisateur {{ user.id }}{% else %}Nouvel utilisateur{% endif %}{% endblock %}
+
+
+    {% block content %}
+        <div class="col-md-12 col-lg-8">
+            <div class="card mb-4">
+                <div class="card-block">
+                    <h3 class="card-title">{% if user is not null %}Edition{% else %}Nouvel utilisateur{% endif %}</h3>
+                    <div class="errors-form">
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <!-- Actual form -->
+                    <form action="" method="post">
+                        {% if currentUser is not null %} <input type="hidden" name="id" class="form-control" value="{{ user.id }}"> {% endif %}
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">Nom d'utilisateur</label>
+                            <div class="col-md-9">
+                                <input type="text" name="username" class="form-control" value="{{ user.username }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">Mot de passe</label>
+                            <div class="col-md-9">
+                                <input type="password" name="password" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">Email</label>
+                            <div class="col-md-9">
+                                <input type="text" name="email" class="form-control" value="{{ user.email }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">Biographie</label>
+                            <div class="col-md-9">
+                                <textarea name="biography" class="form-control">{{ user.biography }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">Catégorie</label>
+                            <div class="col-md-9">
+                                <select name="category" class="custom-select form-control">
+                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_ADMIN') %}selected{% endif %} value={{ constant('Blog\\app\\Entity\\User::STATUS_ADMIN') }}>Administrateur</option>
+                                    <option {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_MEMBER') %}selected{% endif %} value="{{ constant('Blog\\app\\Entity\\User::STATUS_MEMBER') }}">
+                                        Membre</option>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="submit" value="{% if user is not null %}Modifier{% else %}Créer{% endif %}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endblock %}

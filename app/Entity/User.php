@@ -6,42 +6,56 @@
  * Time: 11:29
  */
 
-namespace App\Entity;
-use Core\Entity;
+namespace Blog\app\Entity;
+use Blog\core\Entity;
 
 class User extends Entity
 {
-    private $nickname;
+    private $username;
     private $password;
     private $email;
     private $dateInscription;
     private $category;
+    private $biography;
+
+    const STATUS_ADMIN = 0;
+    const STATUS_MEMBER = 1;
 
     public function isValid()
     {
-        return ! empty($this->nickname) || empty($this->password) || empty($this->email) || empty($this->category);
+        if(empty($this->username) || empty($this->password)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function isAdmin() {
+        if(intval($this->category) == self::STATUS_ADMIN) {
+            return true;
+        }
+        return false;
     }
 
     /**
      * @return mixed
      */
-    public function getNickname()
+    public function username()
     {
-        return $this->nickname;
+        return $this->username;
     }
 
     /**
-     * @param mixed $nickname
+     * @param mixed $username
      */
-    public function setNickname($nickname)
+    public function setUsername($username)
     {
-        $this->nickname = $nickname;
+        $this->username = $username;
     }
 
     /**
      * @return mixed
      */
-    public function getPassword()
+    public function password()
     {
         return $this->password;
     }
@@ -57,7 +71,7 @@ class User extends Entity
     /**
      * @return mixed
      */
-    public function getEmail()
+    public function email()
     {
         return $this->email;
     }
@@ -81,7 +95,7 @@ class User extends Entity
     /**
      * @param mixed $dateInscription
      */
-    public function setDateInscription(\DateTime $dateInscription)
+    public function setDateInscription($dateInscription)
     {
         $this->dateInscription = $dateInscription;
     }
@@ -102,4 +116,20 @@ class User extends Entity
         $this->category = $category;
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function biography()
+    {
+        return $this->biography;
+    }
+
+    /**
+     * @param mixed $biography
+     */
+    public function setBiography($biography)
+    {
+        $this->biography = $biography;
+    }
 }
