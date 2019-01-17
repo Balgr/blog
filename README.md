@@ -1,3 +1,5 @@
+[![SymfonyInsight](https://insight.symfony.com/projects/144c4c1a-d762-4975-8518-b8bee6a27efa/mini.svg)](https://insight.symfony.com/projects/144c4c1a-d762-4975-8518-b8bee6a27efa)
+
 ##Personal Blog - Farem
 
 This project has been realized in the context of OpenClassrooms' "PHP/Symfony Developer path". It is actually the 5th project I have to set up for this path.
@@ -9,7 +11,6 @@ I chose to integrate 3 of those external libraries :
  - Symfony YAML : I chose to store configuration files in Yaml format, so this is very useful
  - Upload : simple PHP library that handles file uploading
  - CKEditor : to allow admins to write HTML content in the Posts.
-
 
 I chose 2 different Bootstrap 4 themes, which are 'Donna' for the frontend, and 'Medialoot Bootstrap 4 Backend' for the backend.
 
