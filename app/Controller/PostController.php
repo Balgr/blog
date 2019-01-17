@@ -312,4 +312,8 @@ class PostController extends Controller
 
         return $user;
     }
+
+    public function generateSitemap() {
+        return $this->model->sitemapData();
+    }
 }

@@ -8,6 +8,7 @@
 
 namespace Blog\app\Model;
 use Blog\app\Controller\CommentController;
+use Blog\app\Entity\Post;
 use Blog\core\Config;
 use Blog\core\Model;
 
@@ -76,5 +77,9 @@ class PostModel extends Model
             return $req->fetchAll();
         }
         return false;
+    }
+
+    public function sitemapData() {
+        return $this->db->pdo()->query("SELECT id, creationDate, lastEditDate FROM $this->tableName WHERE status = '" . Post::POST_STATUS_PUBLISHED . "'");
     }
 }
