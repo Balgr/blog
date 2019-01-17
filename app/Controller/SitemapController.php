@@ -12,11 +12,11 @@ use Blog\app\Entity\Post;
 use Blog\app\Controller\PostController;
 use Blog\core\Controller;
 use Blog\core\Database;
+use DateTime;
 
 class SitemapController extends Controller
 {
     const PATH = 'https://farem.tech/';
-    private $urls = array();
     private $postController;
 
     public function generateSitemapAction() {
@@ -26,12 +26,14 @@ class SitemapController extends Controller
 
         foreach($posts as $post) {
             $urls[] = array(
-                "loc" => 'posts/' . $post['id'],
-                "lastMod" => is_null($post['lastEditDate']) ? $post['lastEditDate'] : $post['creationDate'],
+                "loc" => 'https://farem.tech/posts/' . $post['id'],
+                "lastEdit" => is_null($post['lastEditDate'])
+                    ? DateTime::createFromFormat('m-d-Y', $post['creationDate'])
+                    : DateTime::createFromFormat('m-d-Y', $post['lastEditDate']),
                 "changeFreq" => 'weekly'
             );
         }
-
+        //var_dump($urls);
         header('Content-Type: application/xml; charset=utf-8');
         echo $this->twig->render('sitemap.xml.twig', array("urls" => $urls));
     }
