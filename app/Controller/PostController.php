@@ -3,8 +3,10 @@
 
 namespace Blog\app\Controller;
 
+use Blog\app\Entity\Comment;
 use Blog\app\Entity\Post;
 use Blog\app\Entity\User;
+use Blog\app\Model\CommentModel;
 use Blog\app\Model\PostModel;
 use Blog\core\Config;
 use Blog\core\Controller;
@@ -110,9 +112,13 @@ class PostController extends Controller
     private function editPost($data) {
         // Adds the Post data not set in the form
         $data['lastEditDate'] = date('Y-m-d H:i');
-        if(!empty($_FILES)) {
+
+        if($_FILES['featuredImage']['size'] != 0) {
             $data['featuredImage'] = $this->uploadImage();
+        } else {
+            unset($data['featuredImage']);
         }
+
 
         // Removes the unmodified data from the form
         unset($data['creatorId']);
@@ -164,22 +170,19 @@ class PostController extends Controller
     }
 
     private function changeStatus($id, $status) {
-        if(UserController::isCurrentUserAdmin()) {
-            $user = new User(unserialize($_SESSION['user']));
-            if ($user->isValid()) {
-                $post = new Post($this->model->getSingle($id));
-                if($this->model->changeStatus($post->id(), $status)) {
-                    return true;
-                }
-                else {
-                    $this->errors['status_unchangeable'] = "Impossible de changer le statut du Post";
-                    return false;
-                }
-            }
-            $this->errors['undefined'] = "Le Post #" . $id . " n'existe pas";
-            return false;
-        }
-        return false;
+         $post = new Post($this->model->getSingle($id));
+         if($post->isValid()) {
+             if($this->model->changeStatus($post->id(), $status)) {
+                 return true;
+             }
+             else {
+                 $this->errors['status_unchangeable'] = "Impossible de changer le statut du Post";
+                 return false;
+             }
+         }
+
+         $this->errors['undefined'] = "Le Post #" . $id . " n'existe pas";
+         return false;
     }
 
     /**
@@ -202,8 +205,8 @@ class PostController extends Controller
         $post = new Post($this->model()->getSingle($id));
         if($post->isValid()) {
             $this->commentController = new CommentController();
-            $post->setComments($this->commentController->model()->getAllByPost($id, $this->commentController->model::NO_LIMIT));
-            $post->setAuthor(new User($this->model->getAuthor($id)));
+            $post->setComments($this->commentController->model()->getAllPublishedByPost($post->id(), $this->commentController->model::NO_LIMIT));
+            $post->setAuthor($this->retrieveAuthor($id));
 
             // Decodes the Post content in HTML for rendering
             $post->setContent(html_entity_decode($post->content()));
@@ -244,7 +247,7 @@ class PostController extends Controller
             $post= new Post($postData);
             $content = str_replace('amp;', '', $post->content());
             $post->setContent(html_entity_decode($content));
-            $post->setAuthor($this->model->getAuthor($post->id()));
+            $post->setAuthor($this->retrieveAuthor($post->id()));
             $post->setCommentsNb($this->commentController->getNumberOfComments($post->id()));
             $posts[] = $post;
         }
@@ -277,20 +280,36 @@ class PostController extends Controller
             // Checks title
             $_POST['title'] = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
             if (filter_var($_POST['title'], FILTER_SANITIZE_STRING) === false) {
-                $this->errors['email'] = 'Veuillez entrer un titre correct';
+                $this->errors['title'] = 'Veuillez entrer un titre correct';
+            }
+            else if(strlen($_POST['title']) > 50) {
+                $this->errors['title'] = 'Le titre ne peut contenir plus de 50 caractères.';
             }
 
             // Checks subtitle
             $_POST['subtitle'] = htmlentities($_POST['subtitle']);
             $_POST['subtitle'] = filter_var($_POST['subtitle'], FILTER_SANITIZE_STRING);
-            if (!preg_match('/^.{5,}$/', $_POST['subtitle'])) {
-                $this->errors['subtitle'] = 'Le sous-titre doit contenir plus de 5 caractères.';
+            if (!preg_match('/^.{,80}$/', $_POST['subtitle'])) {
+                $this->errors['subtitle'] = 'Le sous-titre doit contenir moins de 80 caractères';
             }
-
             // Checks content
             $_POST['content'] = htmlentities($_POST['content']);
+
+            if(isset($_POST['lastEditReason'])) {
+                if (!preg_match('/^.{,100}$/', $_POST['lastEditReason'])) {
+                    $this->errors['lastEditReason'] = 'Le motif d\'édition doit contenir moins de 100 caractères.';
+                }
+            }
         }
 
         // The checks for the Image input are handled by the Upload library.
+    }
+
+    private function retrieveAuthor($id)
+    {
+        $user = new User($this->model->getAuthor($id));
+        $user->setBiography(html_entity_decode($user->biography()));
+
+        return $user;
     }
 }

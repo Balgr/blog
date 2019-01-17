@@ -3,7 +3,7 @@
     {% block title %}Tableau de bord - Liste des utilisateurs{% endblock %}
 
     {% block content %}
-        <div class="col-md-12 col-lg-8">
+        <div class="col-md-12 col-lg-12">
             <div class="card mb-4">
                 <div class="card-block">
                     <h3 class="card-title">Utilisateurs</h3>
@@ -21,7 +21,7 @@
                     </div> #}
                     {% if users is not empty %}
                         <div class="table-responsive">
-                            <table class="table table-striped">
+                            <table class="table table-striped table-users" id="table-users">
                                 <thead>
                                 <tr>
                                     <th>ID</th>
@@ -37,7 +37,11 @@
                                     <td>{{ user.id }}</td>
                                     <td><a href="/backend/users/edit/{{ user.id }}">{{ user.username }}</a></td>
                                     <td>{{ user.email }}</td>
-                                    <td>{{ user.category }}</td>
+                                    <td>
+                                        {% if user.category == constant('Blog\\app\\Entity\\User::STATUS_ADMIN') %}Administrateur
+                                        {% elseif user.category == constant('Blog\\app\\Entity\\User::STATUS_MEMBER') %}Membre
+                                        {% endif %}
+                                    </td>
                                     <td><a href="/backend/users/delete/{{ user.id }}"><em class="fa fa-minus-circle"></em></a></td>
                                 </tr>
                                 {% endfor %}
@@ -47,14 +51,6 @@
                     {% else %}
                         <p>Aucun utilisateur à afficher.</p>
                     {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12 col-lg-4">
-            <div class="card mb-4">
-                <div class="card-block">
-                    <h3 class="card-title">Que faire ?</h3>
-                    <a href="/backend/users/add">Nouvel utilisateur</a>
                 </div>
             </div>
         </div>

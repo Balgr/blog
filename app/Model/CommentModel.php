@@ -55,7 +55,7 @@ class CommentModel extends Model
         }
     }
 
-    public function getAllByPost($postId, $limit)
+    public function getAllPublishedByPost($postId, $limit)
     {
         $req = "SELECT * FROM $this->tableName WHERE postId = ?";
         $req = $this->db->pdo()->prepare($req);

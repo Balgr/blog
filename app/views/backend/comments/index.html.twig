@@ -6,7 +6,11 @@
         <div class="col-md-12 col-lg-12">
             <div class="card mb-4">
                 <div class="card-block">
-                    <h3 class="card-title">Commentaires</h3>
+                    <h3 class="card-title">
+                        {% if current['1'] == 'list' %}Tous les commentaires
+                        {% elseif current['1'] == 'trash' %}Commentaires à la corbeille
+                        {% else %}Commentaires à modérer{% endif %}
+                    </h3>
                     <div class="errors-form">
                         {% for error in errors %}
                             <p>{{ error }}</p>
@@ -21,14 +25,14 @@
                     </div> #}
                     {% if comments is not empty %}
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-comments" id="table-comments">
                             <thead>
                             <tr>
-                                <th>Commentaire ID</th>
+                                <th>ID</th>
                                 <th>Post ID</th>
                                 <th>Contenu</th>
                                 <th>Auteur</th>
-                                <th>Email</th>
+                                <th>Statut</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -39,7 +43,10 @@
                                 <td><a href="/posts/{{ comment.postId }}">{{ comment.postId }}</a></td>
                                 <td>{{ comment.content }}</td>
                                 <td>{{ comment.authorName }}</td>
-                                <td>{{ comment.status }}</td>
+                                <td>{% if comment.status == constant('Blog\\app\\Entity\\Comment::COMMENT_IN_MODERATION') %}En modération
+                                    {% elseif comment.status == constant('Blog\\app\\Entity\\Comment::COMMENT_TRASH') %}Corbeille
+                                    {% else %}Publié{% endif %}
+                                </td>
                                 <td><a href="/backend/comments/trash/{{ comment.id }}"><em class="fa fa-trash"></em></a>
                                 <a href="/backend/comments/delete/{{ comment.id }}"><em class="fa fa-minus-circle"></em></a>
                                 <a href="/backend/comments/publish/{{ comment.id }}"><em class="fa fa-angle-right"></em></a></td>

@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
+
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/core/Autoloader.php';
 
@@ -66,6 +68,7 @@ try {
     $router->get('/backend/posts/publish/:id', 'Post#publishPostAction');
 
     $router->get('/backend/users', 'User#showListUsersAction');
+    $router->post('/backend/users', 'User#showListUsersAction');
     $router->get('/backend/users/add', 'User#createUserAction');
     $router->post('/backend/users/add', 'User#createUserAction');
     $router->get('/backend/users/edit/:id', 'User#editUserAction')->with('id', '[0-9]+');
@@ -82,5 +85,5 @@ try {
 
     $router->run();
 } catch(Exception $e) {
-    $router->throwError('404');
+    echo "Erreur : " . $e->getMessage();
 }

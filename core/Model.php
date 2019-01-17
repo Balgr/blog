@@ -46,15 +46,26 @@ abstract class Model
 
 
     public function getAll ($status = -1, $limit = -1) {
+        $params = array();
         $req = "SELECT * FROM $this->tableName";
         if($status != -1) {
-            $req .=  " WHERE status = '$status'";
+            $req .=  " WHERE status = ?";
+            $params[] = $status;
         }
         if($limit != -1) {
-            $req = $req . " LIMIT " .$this->limit;
+            $req = $req . " LIMIT ?" .$this->limit;
+            $params[] = $limit;
         }
-        $data = $this->db->pdo()->query($req);
-        return $data->fetchAll();
+
+        if($this->tableName !== 'users') {
+            $req = $req . " ORDER BY $this->tableName.creationDate DESC";
+        }
+
+        $req = $this->db->pdo()->prepare($req);
+
+        $req->execute($params);
+
+        return $req->fetchAll();
     }
 
     /**

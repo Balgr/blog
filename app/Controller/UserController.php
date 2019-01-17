@@ -19,7 +19,6 @@ use Twig\Error\Error;
  * Date: 09/12/2018
  * Time: 20:15
  */
-
 class UserController extends Controller
 {
     protected $categories;
@@ -62,8 +61,8 @@ class UserController extends Controller
      */
     public function showListUsersAction()
     {
-        self::whenCurrentUserAccessBackend();
         $users = $this->model->getAll();
+
         echo $this->twig->render("backend/users/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "users" => $users, "current" => array("users", "list")));
     }
 
@@ -75,17 +74,22 @@ class UserController extends Controller
     {
         self::whenCurrentUserAccessBackend();
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($this->errors())) {
-            $this->addUser($_POST);
-            header('Location: /backend/users/');
+            if (!$this->checkEmailAndUsernameInDatabase($_POST)) {
+                $this->addUser($_POST);
+                header('Location: /backend/users/');
+            }
         }
-
-        echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "current" => array("users", "add")));
+        echo $this->twig->render("backend/users/detail.html.twig", array(
+            "currentUser" => $this->currentUser,
+            "errors" => $this->errors,
+            "current" => array("users", "add")
+        ));
     }
 
     private function addUser($data)
     {
         $data['dateInscription'] = date('Y-m-d H:i');
-        $data['password'] = password_hash($data['password'], PASSWORD_ARGON2I);
+        $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
         return $this->model->create($data);
     }
 
@@ -93,13 +97,10 @@ class UserController extends Controller
     {
         self::whenCurrentUserAccessBackend();
         $user = new User($this->model()->getSingle($id));
-        if ($user->isValid()) {
+        if ($user->isValid() && !$this->checkEmailAndUsernameInDatabase($_POST)) {
             $user->setPassword('');
-            // Si GET : formulaire
-            if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-                echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "user" => $user, "current" => array("users", "list")));
-            }
-            if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($this->errors)) {
+            $user->setBiography(html_entity_decode($user->biography()));
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $this->editUser($_POST, $id);
                 header('Location: /backend/users/');
             }
@@ -107,12 +108,19 @@ class UserController extends Controller
             $this->errors['undefined'] = "L'utilisateur #$id n'existe pas";
             $this->showListUsersAction();
         }
+        echo $this->twig->render("backend/users/detail.html.twig", array(
+            "currentUser" => $this->currentUser,
+            "user" => $user,
+            "errors" => $this->errors,
+            "current" => array("users", "list")));
     }
 
     private function editUser($data, $id)
     {
         if (is_null($data['password']) || empty($data['password'])) {
             unset($data['password']);
+        } else {
+            $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
         }
         return $this->model->update($data);
     }
@@ -173,10 +181,11 @@ class UserController extends Controller
                 return;
             }
 
+
             // Adds the User data not set in the form
             $_POST['dateInscription'] = date('Y-m-d H:i');
             $_POST['category'] = User::STATUS_MEMBER; // By default, a User is only a Member.
-            $_POST['password'] = password_hash($_POST['password'], PASSWORD_ARGON2I);
+            $_POST['password'] = password_hash($_POST['password'], PASSWORD_BCRYPT);
             $user = new User($this->model->getSingle($this->model->create($_POST)));
             $user->setPassword('');
             $_SESSION['user'] = serialize($user);
@@ -201,7 +210,7 @@ class UserController extends Controller
             echo $this->twig->render('frontend/profile.html.twig', array("currentUser" => $user));
         } else {
             if (isset($_POST["password"]) && !empty($_POST["password"])) {
-                $_POST["password"] = password_hash($_POST['password'], PASSWORD_ARGON2I);
+                $_POST["password"] = password_hash($_POST['password'], PASSWORD_BCRYPT);
             }
             $userId = $this->model->update($_POST);
 
@@ -225,41 +234,29 @@ class UserController extends Controller
             header("Location: /");
         } else {
             // Else, if the User sends a POST request, it means that he already completed the login form.
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Checks if the User's username and password are not empty
-                $username = trim($_POST['username']);
-                $password = trim($_POST['password']);
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {// Checks if the username exists in database
+                $user = new User($this->model->getByUsername($_POST['username']));
 
-                if (empty($username)) {
-                    $this->errors['username'] = "Empty username";
-                }
-                if (empty($password)) {
-                    $this->errors['password'] = "Empty password";
-                } // If the username and password are provided...
-                else {
-                    // Checks if the username exists in database
-                    $user = new User($this->model->getByUsername($username));
-
-                    // If the User exists in the database, checks if the provided username and password are correct
-                    if ($user->isValid()) {
-                        if (password_verify($password, $user->password())) {
+                // If the User exists in the database, checks if the provided username and password are correct
+                if ($user->isValid()) {
+                    if(!empty($_POST['username']) && !empty($_POST['password'])) {
+                        if (password_verify($_POST['password'], $user->password())) {
                             $_SESSION['user'] = serialize($user);
                             $_SESSION['logged_in'] = true;
                             header("Location: /");
                         } else {
-                            ///$this->errors['password'] = 'Mot de passe incorrect : '
-                            $this->errors['password'] = 'Mot de passe incorrect : '  .$password. ' - ' . password_hash($password, PASSWORD_ARGON2I);
+                            $this->errors['password'] = 'Mot de passe incorrect';
                         }
-                    } /**
-                     * Else, redirects to the login page stating that the user does not exist.
-                     */
-                    else {
-                        $this->errors['unregistered'] = "Utilisateur inconnu.";
                     }
+                } /**
+                 * Else, redirects to the login page stating that the user does not exist.
+                 */
+                else {
+                    $this->errors['unregistered'] = "Utilisateur inconnu.";
                 }
             }
-            echo $this->twig->render('frontend/login.html.twig', array("errors" => $this->errors));
         }
+        echo $this->twig->render('frontend/login.html.twig', array("errors" => $this->errors));
     }
 
 
@@ -274,10 +271,12 @@ class UserController extends Controller
         header("Location: /");
     }
 
-    public static function whenCurrentUserAccessBackend() {
-        if(!self::currentUser()->isAdmin()) {
+    public static function whenCurrentUserAccessBackend()
+    {
+        if (!self::isCurrentUserAdmin()) {
             header('Location: /forbidden');
         }
+
         return true;
     }
 
@@ -288,7 +287,8 @@ class UserController extends Controller
     public static function isCurrentUserAdmin()
     {
         $user = self::currentUser();
-        if($user->isValid()) {
+
+        if ($user !== false && $user->isValid()) {
             return $user->isAdmin();
         }
         return false;
@@ -308,10 +308,10 @@ class UserController extends Controller
         $emailUsed = $this->model->isEmailAlreadyRegistered(htmlspecialchars($array['email']));
         $usernameUsed = $this->model->isUsernameAlreadyRegistered(htmlspecialchars($array['username']));
         if ($emailUsed || $usernameUsed) {
-            if (!$emailUsed) {
+            if ($emailUsed) {
                 $this->errors['email'] = 'E-mail déjà existant.';
             }
-            if (!$usernameUsed) {
+            if ($usernameUsed) {
                 $this->errors['username'] = 'Nom d\'utilisateur déjà existant.';
             }
             return true;
@@ -322,19 +322,23 @@ class UserController extends Controller
 
     private function validateAndSanitizePostData()
     {
-        if (empty($_POST['username']) || empty($_POST['password']) || empty($_POST['email'])) {
+        if (empty($_POST['username']) || empty($_POST['password']) || (isset($_POST['email']) && empty($_POST['email']))) {
             $this->errors['empty'] = 'Veuillez remplir tous les champs';
         } else {
             // Username
             $_POST['username'] = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
-            if (!preg_match('/^[a-zA-Z0-9]{5,}/', $_POST['username'])) {
-                $this->errors['username'] = 'Veuillez entrer un nom d\'utilisateur, au moins 5 caractères alphanumériques.';
+            if (!preg_match('/^[a-zA-Z0-9]{3,15}/', $_POST['username'])) {
+                $this->errors['username'] = 'Le nom d\'utilisateur doit contenir entre 3 et 15 caractères alphanumériques.';
             }
             // Email
-            if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) {
-                $this->errors['email'] = 'Veuillez entrer un email correct.';
+            if(isset($_POST['email'])) {
+                $_POST['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+                if (isset($_POST['email']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) {
+                    $this->errors['email'] = 'Veuillez entrer un email correct.';
+                }  else if (!preg_match('/^.{5,30}$/', $_POST['email'])) {
+                    $this->errors['email'] = 'L\'email doit contenir entre 5 et 30 caractères.';
+                }
             }
-            $_POST['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
             // Password
             $_POST['password'] = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
@@ -342,7 +346,16 @@ class UserController extends Controller
                 $this->errors['password'] = 'Le mot de passe doit contenir au moins 5 caractère alphanumériques.';
             }
 
-            // Catégorie
+            // Bio
+            if(isset($_POST['biography']) && !empty($_POST['biography'])) {
+                $_POST['biography'] = filter_var($_POST['biography'], FILTER_SANITIZE_STRING);
+                if (!preg_match('/^.{0,300}$/', $_POST['biography'])) {
+                    $this->errors['biography'] = 'La biographie ne peut contenir plus de 300 caractères.';
+                }
+                $_POST['biography'] = htmlentities($_POST['biography']);
+            }
+
+            // Catégory
             $_POST['category'] = filter_var((int)$_POST['category'], FILTER_SANITIZE_NUMBER_INT);
             $_POST['category'] = intval($_POST['category']);
             if ($_POST['category'] !== User::STATUS_ADMIN && $_POST['category'] !== User::STATUS_MEMBER) {

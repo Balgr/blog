@@ -14,10 +14,8 @@
                 {% for post in posts %}
                 <div class="col-lg-4 col-md-6 item-hidden grid-item">
                     <div class="blog-wrap-2 blog-shadow mb-40">
-                        <div class="blog-img hover-3">
-                            <a href="/posts/{{ post.id }}">
-                                <img src="/public/img/uploads/{{ post.featuredImage }}" alt="">
-                            </a>
+                        <div class="blog-img hover-3" style="background-image: url('/public/uploads/posts/{{ post.featuredImage }}');">
+                            <a href="/posts/{{ post.id }}"></a>
                             <div class="readmore-icon">
                                 <a href="/posts/{{ post.id }}">
                                     <i class="ti-arrow-right"></i>

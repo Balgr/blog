@@ -7,7 +7,6 @@ use Blog\core\Controller;
 use Blog\app\Entity\Comment;
 use Blog\core\Config;
 use Blog\core\Database;
-use Twig\Error\Error;
 
 class CommentController extends Controller
 {
@@ -135,10 +134,8 @@ class CommentController extends Controller
             $comments[] = new Comment($comment);
         }
 
-        echo $this->twig->render("comments/backend/index.html.twig.twig", array("comments" => $comments));
+        echo $this->twig->render("comments/backend/index.html.twig", array("comments" => $comments));
     }
-
-
 
 
     public function commentsByPostAction($postId, $limit = CommentModel::NO_LIMIT) {
@@ -171,9 +168,8 @@ class CommentController extends Controller
 
 
     public function addAction() {
-        UserController::whenCurrentUserAccessBackend();
         if(!isset($_POST)) {
-            $this->errors['empty'] = 'Veuillez envoyer le formulaire correctement.';
+            $this->errors['empty'] = 'Veuillez remplir le formulaire correctement.';
         }
         else {
 
@@ -204,19 +200,21 @@ class CommentController extends Controller
 
     private function validateAndSanitizePostData()
     {
-        if(empty($_POST['authorName']) || empty($_POST['authorEmail']) || empty($_POST['conte   nt']) || empty($_POST['postId'])) {
+        if(empty($_POST['authorName']) || empty($_POST['authorEmail']) || empty($_POST['content']) || empty($_POST['postId'])) {
             $this->errors['empty'] = 'Veuillez remplir tous les champs';
         }
         else {
             // Checks email
             $_POST['authorEmail'] = filter_var($_POST['authorEmail'], FILTER_SANITIZE_EMAIL);
-            if (!filter_var($_POST['authorEmail'], FILTER_VALIDATE_INT) === false) {
+            if (!filter_var($_POST['authorEmail'], FILTER_VALIDATE_EMAIL) === false) {
                 $this->errors['email'] = 'Veuillez entrer un email correct.';
+            } else if (!preg_match('/^.{,30}$/', $_POST['authorEmail'])) {
+                $this->errors['email'] = 'L\'email ne peut contenir plus de 30 caractères.';
             }
 
             $_POST['authorName'] = strip_tags($_POST['authorName']);
-            if (!preg_match('/^[a-zA-Z0-9]{5,}/', $_POST['authorName'])) {
-                $this->errors['authorName'] = 'Veuillez entrer un nom d\'utilisateur, au moins 6 caractères alphanumériques.';
+            if (!preg_match('/^[a-zA-Z0-9]{5,15}/', $_POST['authorName'])) {
+                $this->errors['authorName'] = 'Veuillez entrer un nom d\'utilisateur contenant entre 5 et 15 caractères alphanumériques.';
             }
 
             $_POST['content'] = strip_tags($_POST['content']);

@@ -77,3 +77,44 @@ body {
     margin-top: 40px;
     text-align: center;
 }
+
+.page-header > div > h1 {
+    text-align: center !important;
+}
+
+.page-header > div {
+    margin-right: 1px;
+    margin-left: 1px;
+}
+
+@media screen and (min-width: 992px) {
+    table.table-comments {table-layout:fixed; width:100%;}/*Setting the table width is important!*/
+    table.table-comments th {overflow:hidden;}/*Hide text outside the cell.*/
+    table.table-comments th:nth-of-type(1) {width:10%;}
+    table.table-comments th:nth-of-type(2) {width:10%;}
+    table.table-comments th:nth-of-type(3) {width:40%;}
+    table.table-comments th:nth-of-type(4) {width:20%;}
+    table.table-comments th:nth-of-type(5) {width:10%;}
+    table.table-comments th:nth-of-type(6) {width:10%;}
+
+    table.table-posts {table-layout:fixed; width:100%;}/*Setting the table width is important!*/
+    table.table-posts th {overflow:hidden;}/*Hide text outside the cell.*/
+    table.table-posts th:nth-of-type(1) {width:10%;}
+    table.table-posts th:nth-of-type(2) {width:40%;}
+    table.table-posts th:nth-of-type(3) {width:20%;}
+    table.table-posts th:nth-of-type(4) {width:20%;}
+    table.table-posts th:nth-of-type(5) {width:20%;}
+
+    table.table-users {table-layout:fixed; width:100%;}/*Setting the table width is important!*/
+    table.table-users th {overflow:hidden;}/*Hide text outside the cell.*/
+    table.table-users th:nth-of-type(1) {width:10%;}
+    table.table-users th:nth-of-type(2) {width:30%;}
+    table.table-users th:nth-of-type(3) {width:30%;}
+    table.table-users th:nth-of-type(4) {width:17%;}
+    table.table-users th:nth-of-type(5) {width:13%;}
+}
+
+
+.dataTables_length, .table-posts_filter {
+    text-align: left;
+}

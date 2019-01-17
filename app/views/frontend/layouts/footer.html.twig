@@ -24,9 +24,11 @@
             <div class="col-lg-4 col-md-4">
                 <div class="made-in f-right">
                     <p>
-                        {% if currentUser is not null %}
+                        {% if currentUser is not null and currentUser != false%}
                             {% if currentUser.category == constant('Blog\\app\\Entity\\User::STATUS_ADMIN') %}
                                 <a class="action-backend" href="/backend">Backend</a> |
+                            {% else %}
+                                <a class="action-profile" href="/profile">Profil</a> |
                             {% endif %}
                             <a class="action-login" href="/logout">Déconnexion ({{ currentUser.username }})</a>
                         {% else %}
