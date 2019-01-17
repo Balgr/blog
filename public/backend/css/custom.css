@@ -113,3 +113,8 @@ body {
     table.table-users th:nth-of-type(4) {width:17%;}
     table.table-users th:nth-of-type(5) {width:13%;}
 }
+
+
+.dataTables_length, .table-posts_filter {
+    text-align: left;
+}
