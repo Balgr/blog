@@ -74,11 +74,16 @@ class UserController extends Controller
     {
         self::whenCurrentUserAccessBackend();
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($this->errors())) {
-            $this->addUser($_POST);
-            header('Location: /backend/users/');
+            if (!$this->checkEmailAndUsernameInDatabase($_POST)) {
+                $this->addUser($_POST);
+                header('Location: /backend/users/');
+            }
         }
-
-        echo $this->twig->render("backend/users/detail.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "current" => array("users", "add")));
+        echo $this->twig->render("backend/users/detail.html.twig", array(
+            "currentUser" => $this->currentUser,
+            "errors" => $this->errors,
+            "current" => array("users", "add")
+        ));
     }
 
     private function addUser($data)
@@ -92,7 +97,7 @@ class UserController extends Controller
     {
         self::whenCurrentUserAccessBackend();
         $user = new User($this->model()->getSingle($id));
-        if ($user->isValid()) {
+        if ($user->isValid() && !$this->checkEmailAndUsernameInDatabase($_POST)) {
             $user->setPassword('');
             $user->setBiography(html_entity_decode($user->biography()));
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -175,6 +180,7 @@ class UserController extends Controller
                     ));
                 return;
             }
+
 
             // Adds the User data not set in the form
             $_POST['dateInscription'] = date('Y-m-d H:i');
@@ -302,10 +308,10 @@ class UserController extends Controller
         $emailUsed = $this->model->isEmailAlreadyRegistered(htmlspecialchars($array['email']));
         $usernameUsed = $this->model->isUsernameAlreadyRegistered(htmlspecialchars($array['username']));
         if ($emailUsed || $usernameUsed) {
-            if (!$emailUsed) {
+            if ($emailUsed) {
                 $this->errors['email'] = 'E-mail déjà existant.';
             }
-            if (!$usernameUsed) {
+            if ($usernameUsed) {
                 $this->errors['username'] = 'Nom d\'utilisateur déjà existant.';
             }
             return true;
@@ -329,8 +335,8 @@ class UserController extends Controller
                 $_POST['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
                 if (isset($_POST['email']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) {
                     $this->errors['email'] = 'Veuillez entrer un email correct.';
-                }  else if (!preg_match('/^.{,30}$/', $_POST['email'])) {
-                    $this->errors['email'] = 'L\'email ne peut contenir plus de 30 caractères.';
+                }  else if (!preg_match('/^.{5,30}$/', $_POST['email'])) {
+                    $this->errors['email'] = 'L\'email doit contenir entre 5 et 30 caractères.';
                 }
             }
 
