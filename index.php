@@ -83,7 +83,9 @@ try {
     $router->get('/backend/comments/trash/:id', 'Comment#trashCommentAction')->with('id', '[0-9]+');
     $router->get('/backend/comments/delete/:id', 'Comment#deleteCommentAction')->with('id', '[0-9]+');
 
+    $router->get('/sitemap.xml', 'Sitemap#generateSitemapAction');
+
     $router->run();
-} catch(Exception $e) {
+} catch (Exception $e) {
     echo "Erreur : " . $e->getMessage();
 }
