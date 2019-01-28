@@ -168,6 +168,7 @@ abstract class Controller
     {
         if (isset($_SESSION['csrf']) && isset($_POST['csrf']) && !empty($_SESSION['csrf']) && !empty($_POST['csrf'])) {
             if ($_SESSION['csrf'] == $_POST['csrf']) {
+                unset($_POST['csrf']);
                 return true;
             }
         }
