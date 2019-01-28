@@ -47,9 +47,20 @@
                                     {% elseif comment.status == constant('Blog\\app\\Entity\\Comment::COMMENT_TRASH') %}Corbeille
                                     {% else %}Publié{% endif %}
                                 </td>
-                                <td><a href="/backend/comments/trash/{{ comment.id }}"><em class="fa fa-trash"></em></a>
-                                <a href="/backend/comments/delete/{{ comment.id }}"><em class="fa fa-minus-circle"></em></a>
-                                <a href="/backend/comments/publish/{{ comment.id }}"><em class="fa fa-angle-right"></em></a></td>
+                                <td>
+                                    <form method="POST" action="/backend/comments/trash/{{ comment.id }}" id="form_trash_{{ comment.id }}">
+                                        <input type="hidden" name="csrf" value="{{ csrf }}"/>
+                                        <a href="javascript:{}" onclick="document.getElementById('form_trash_{{ comment.id }}').submit(); return false;"><em class="fa fa-trash"></em></a>
+                                    </form>
+                                    <form method="POST" action="/backend/comments/delete/{{ comment.id }}" id="form_delete_{{ comment.id }}">
+                                        <input type="hidden" name="csrf" value="{{ csrf }}"/>
+                                        <a href="javascript:{}" onclick="document.getElementById('form_delete_{{ comment.id }}').submit(); return false;"><em class="fa fa-minus-circle"></em></a>
+                                    </form>
+                                    <form method="POST" action="/backend/comments/publish/{{ comment.id }}" id="form_publish_{{ comment.id }}">
+                                        <input type="hidden" name="csrf" value="{{ csrf }}"/>
+                                        <a href="javascript:{}" onclick="document.getElementById('form_publish_{{ comment.id }}').submit(); return false;"><em class="fa fa-angle-right"></em></a>
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                             </tbody>

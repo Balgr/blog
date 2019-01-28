@@ -29,24 +29,30 @@ class CommentController extends Controller
     public function showListCommentsAction() {
         UserController::whenCurrentUserAccessBackend();
         $comments = $this->getComments();
-        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "list")));
+        $this->generateToken();
+        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "list"), "errors" => $this->errors, "csrf" => $this->csrf));
     }
 
     public function showCommentsTrashedAction() {
         UserController::whenCurrentUserAccessBackend();
         $comments = $this->getComments(Comment::COMMENT_TRASH);
-        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "trash")));
+        $this->generateToken();
+        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "trash"), "errors" => $this->errors, "csrf" => $this->csrf));
     }
 
     public function showCommentsToModerateAction() {
         UserController::whenCurrentUserAccessBackend();
         $comments = $this->getComments(Comment::COMMENT_IN_MODERATION);
-        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "moderate")));
+        $this->generateToken();
+        echo $this->twig->render("backend/comments/index.html.twig", array("currentUser" => $this->currentUser, "comments" => $comments, "current" => array("comments", "moderate"), "errors" => $this->errors, "csrf" => $this->csrf));
     }
 
     public function deleteCommentAction($id) {
         UserController::whenCurrentUserAccessBackend();
-        if($this->delete($id)) {
+        if(!$this->checkCSRF()) {
+            $this->showListCommentsAction();
+        }
+        else if($this->delete($id)) {
             header('Location: /backend/comments');
         }
     }
@@ -67,7 +73,10 @@ class CommentController extends Controller
 
     public function trashCommentAction($id) {
         UserController::whenCurrentUserAccessBackend();
-        if($this->trash($id)) {
+        if(!$this->checkCSRF()) {
+            $this->showListCommentsAction();
+        }
+        else if($this->trash($id)) {
             header('Location: /backend/comments');
         }
     }
@@ -78,7 +87,10 @@ class CommentController extends Controller
 
     public function publishCommentAction($id) {
         UserController::whenCurrentUserAccessBackend();
-        if($this->publish($id)) {
+        if(!$this->checkCSRF()) {
+            $this->showListCommentsAction();
+        }
+        else if($this->publish($id)) {
             header('Location: /backend/comments');
         }
     }
@@ -134,6 +146,7 @@ class CommentController extends Controller
             $comments[] = new Comment($comment);
         }
 
+        $this->generateToken();
         echo $this->twig->render("comments/backend/index.html.twig", array("comments" => $comments));
     }
 
@@ -172,20 +185,21 @@ class CommentController extends Controller
             $this->errors['empty'] = 'Veuillez remplir le formulaire correctement.';
         }
         else {
+            if(!$this->checkCSRF()) {
+                // Adds the data not set in the form (the creationDate, the status (In Moderation), and the author info if it is connected)
+                if (!is_null($this->currentUser)) {
+                    $_POST['authorName'] = $this->currentUser->username();
+                    $_POST['authorEmail'] = $this->currentUser->email();
+                }
+                $_POST['creationDate'] = date('Y-m-d H:i');
+                $_POST['status'] = Comment::COMMENT_IN_MODERATION;
 
-            // Adds the data not set in the form (the creationDate, the status (In Moderation), and the author info if it is connected)
-            if (!is_null($this->currentUser)) {
-                $_POST['authorName'] = $this->currentUser->username();
-                $_POST['authorEmail'] = $this->currentUser->email();
-            }
-            $_POST['creationDate'] = date('Y-m-d H:i');
-            $_POST['status'] = Comment::COMMENT_IN_MODERATION;
+                $this->validateAndSanitizePostData();
 
-            $this->validateAndSanitizePostData();
-
-            if(empty($this->errors)) {
-                $this->model->create($_POST);
-                header('Location: /posts/' . $_POST['postId']);
+                if(empty($this->errors)) {
+                    $this->model->create($_POST);
+                    header('Location: /posts/' . $_POST['postId']);
+                }
             }
         }
         $postController = new PostController();

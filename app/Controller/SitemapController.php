@@ -33,6 +33,7 @@ class SitemapController extends Controller
                 "changeFreq" => 'weekly'
             );
         }
+
         header('Content-Type: application/xml; charset=utf-8');
         echo $this->twig->render('sitemap.xml.twig', array("urls" => $urls));
     }

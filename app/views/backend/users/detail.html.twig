@@ -50,6 +50,7 @@
                                 </select>
                             </div>
                         </div>
+                        <input type="hidden" name="csrf" value="{{ csrf }}">
                         <input type="submit" value="{% if user is not null %}Modifier{% else %}Créer{% endif %}">
                     </form>
                 </div>

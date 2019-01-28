@@ -25,6 +25,7 @@ abstract class Controller
     protected $limit;
     protected $errors;
     protected $uploadPath;
+    protected $csrf;
 
 
     public function __construct()
@@ -36,6 +37,10 @@ abstract class Controller
 
         $this->instantiateTwig();
         $this->limit = Config::getConfigFromYAML(__DIR__ . "/../config/database/entities.yml")[$this->entity]['indexLimit'];
+
+        if (!isset($_SESSION)) {
+            session_start();
+        }
     }
 
     /**
@@ -127,6 +132,22 @@ abstract class Controller
     }
 
     /**
+     * @return mixed
+     */
+    public function getCsrf()
+    {
+        return $this->csrf;
+    }
+
+    /**
+     * @param mixed $csrf
+     */
+    public function setCsrf($csrf)
+    {
+        $this->csrf = $csrf;
+    }
+
+    /**
      * @param mixed $model
      */
     protected function setModel($model)
@@ -141,5 +162,22 @@ abstract class Controller
         
         $this->loader = new \Twig_Loader_Filesystem($this->templatesPath());
         $this->twig = new \Twig_Environment($this->loader, array('debug' => true));
+    }
+
+    protected function checkCSRF()
+    {
+        if (isset($_SESSION['csrf']) && isset($_POST['csrf']) && !empty($_SESSION['csrf']) && !empty($_POST['csrf'])) {
+            if ($_SESSION['csrf'] == $_POST['csrf']) {
+                return true;
+            }
+        }
+        $this->errors[] = "Le jeton d'authentification ne correspond pas";
+        return false;
+    }
+
+    protected function generateToken()
+    {
+        $this->csrf = bin2hex(random_bytes(32));
+        $_SESSION['csrf'] = $this->csrf;
     }
 }

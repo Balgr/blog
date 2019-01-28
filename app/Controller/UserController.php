@@ -46,10 +46,6 @@ class UserController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->validateAndSanitizePostData();
         }
-
-        if (!isset($_SESSION)) {
-            session_start();
-        }
     }
 
     /**
@@ -62,8 +58,15 @@ class UserController extends Controller
     public function showListUsersAction()
     {
         $users = $this->model->getAll();
+        $this->generateToken();
 
-        echo $this->twig->render("backend/users/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "users" => $users, "current" => array("users", "list")));
+        echo $this->twig->render("backend/users/index.html.twig", array(
+            "currentUser" => $this->currentUser,
+            "errors" => $this->errors,
+            "users" => $users,
+            "current" => array("users", "list"),
+            "csrf" => $this->csrf
+        ));
     }
 
     /**
@@ -73,16 +76,21 @@ class UserController extends Controller
     public function createUserAction()
     {
         self::whenCurrentUserAccessBackend();
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($this->errors())) {
-            if (!$this->checkEmailAndUsernameInDatabase($_POST)) {
-                $this->addUser($_POST);
-                header('Location: /backend/users/');
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCSRF();
+            if (empty($this->errors())) {
+                if (!$this->checkEmailAndUsernameInDatabase($_POST)) {
+                    $this->addUser($_POST);
+                    header('Location: /backend/users/');
+                }
             }
         }
+        $this->generateToken();
         echo $this->twig->render("backend/users/detail.html.twig", array(
             "currentUser" => $this->currentUser,
             "errors" => $this->errors,
-            "current" => array("users", "add")
+            "current" => array("users", "add"),
+            "csrf" => $this->csrf
         ));
     }
 
@@ -96,23 +104,29 @@ class UserController extends Controller
     public function editUserAction($id)
     {
         self::whenCurrentUserAccessBackend();
-        $user = new User($this->model()->getSingle($id));
-        if ($user->isValid() && !$this->checkEmailAndUsernameInDatabase($_POST)) {
-            $user->setPassword('');
-            $user->setBiography(html_entity_decode($user->biography()));
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $this->editUser($_POST, $id);
-                header('Location: /backend/users/');
+        if($this->checkCSRF()) {
+            $user = new User($this->model()->getSingle($id));
+            if ($user->isValid() && !$this->checkEmailAndUsernameInDatabase($_POST)) {
+                $user->setPassword('');
+                $user->setBiography(html_entity_decode($user->biography()));
+                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                    $this->editUser($_POST, $id);
+                    header('Location: /backend/users/');
+                }
+            } else {
+                $this->errors['undefined'] = "L'utilisateur #$id n'existe pas";
+                $this->showListUsersAction();
             }
-        } else {
-            $this->errors['undefined'] = "L'utilisateur #$id n'existe pas";
-            $this->showListUsersAction();
         }
+
+        $this->generateToken();
         echo $this->twig->render("backend/users/detail.html.twig", array(
             "currentUser" => $this->currentUser,
             "user" => $user,
             "errors" => $this->errors,
-            "current" => array("users", "list")));
+            "current" => array("users", "list"),
+            "csrf" => $this->csrf
+        ));
     }
 
     private function editUser($data, $id)
@@ -128,9 +142,10 @@ class UserController extends Controller
     public function deleteUserAction($id)
     {
         self::whenCurrentUserAccessBackend();
-        if ($this->deleteUser($id)) {
+        if ($this->checkCSRF() && $this->deleteUser($id)) {
             header('Location: /backend/users');
         }
+        $this->showListUsersAction();
     }
 
     private function deleteUser($id)
@@ -164,19 +179,24 @@ class UserController extends Controller
 
         // If the User is NOT passing data from the registration form, shows him the form.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->generateToken();
             echo $this->twig->render('frontend/register.html.twig',
                 array(
                     "user" => array("category" => $this->categories),
-                    "errors" => $this->errors
+                    "errors" => $this->errors,
+                    "csrf" => $this->csrf
                 ));
         } else {
+            $this->checkCSRF();
             if (empty($this->errors)) {
                 $this->checkEmailAndUsernameInDatabase($_POST);
             } else {
+                $this->generateToken();
                 echo $this->twig->render('frontend/register.html.twig',
                     array(
                         "user" => array("category" => $this->categories),
-                        "errors" => $this->errors
+                        "errors" => $this->errors,
+                        "csrf" => $this->csrf
                     ));
                 return;
             }
@@ -207,7 +227,11 @@ class UserController extends Controller
         $user = new User($this->model->getSingle($id));
         if (!isset($_POST) || empty($_POST)) {
             $user->setPassword('');
-            echo $this->twig->render('frontend/profile.html.twig', array("currentUser" => $user));
+            $this->generateToken();
+            echo $this->twig->render('frontend/profile.html.twig', array(
+                "currentUser" => $user,
+                "csrf" => $this->csrf
+            ));
         } else {
             if (isset($_POST["password"]) && !empty($_POST["password"])) {
                 $_POST["password"] = password_hash($_POST['password'], PASSWORD_BCRYPT);
@@ -235,28 +259,35 @@ class UserController extends Controller
         } else {
             // Else, if the User sends a POST request, it means that he already completed the login form.
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {// Checks if the username exists in database
-                $user = new User($this->model->getByUsername($_POST['username']));
+                if ($this->checkCSRF()) {
+                    $user = new User($this->model->getByUsername($_POST['username']));
 
-                // If the User exists in the database, checks if the provided username and password are correct
-                if ($user->isValid()) {
-                    if(!empty($_POST['username']) && !empty($_POST['password'])) {
-                        if (password_verify($_POST['password'], $user->password())) {
-                            $_SESSION['user'] = serialize($user);
-                            $_SESSION['logged_in'] = true;
-                            header("Location: /");
-                        } else {
-                            $this->errors['password'] = 'Mot de passe incorrect';
+                    // If the User exists in the database, checks if the provided username and password are correct
+                    if ($user->isValid()) {
+                        if (!empty($_POST['username']) && !empty($_POST['password'])) {
+                            if (password_verify($_POST['password'], $user->password())) {
+                                $_SESSION['user'] = serialize($user);
+                                $_SESSION['logged_in'] = true;
+                                header("Location: /");
+                            } else {
+                                $this->errors['password'] = 'Mot de passe incorrect';
+                            }
                         }
+                    } /**
+                     * Else, redirects to the login page stating that the user does not exist.
+                     */
+                    else {
+                        $this->errors['unregistered'] = "Utilisateur inconnu.";
                     }
-                } /**
-                 * Else, redirects to the login page stating that the user does not exist.
-                 */
-                else {
-                    $this->errors['unregistered'] = "Utilisateur inconnu.";
                 }
             }
         }
-        echo $this->twig->render('frontend/login.html.twig', array("errors" => $this->errors));
+
+        $this->generateToken();
+        echo $this->twig->render('frontend/login.html.twig', array(
+            "errors" => $this->errors,
+            "csrf" => $this->csrf
+        ));
     }
 
 
@@ -331,12 +362,14 @@ class UserController extends Controller
                 $this->errors['username'] = 'Le nom d\'utilisateur doit contenir entre 3 et 15 caractères alphanumériques.';
             }
             // Email
-            if(isset($_POST['email'])) {
+            if (isset($_POST['email'])) {
                 $_POST['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
                 if (isset($_POST['email']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) {
                     $this->errors['email'] = 'Veuillez entrer un email correct.';
-                }  else if (!preg_match('/^.{5,30}$/', $_POST['email'])) {
-                    $this->errors['email'] = 'L\'email doit contenir entre 5 et 30 caractères.';
+                } else {
+                    if (!preg_match('/^.{5,30}$/', $_POST['email'])) {
+                        $this->errors['email'] = 'L\'email doit contenir entre 5 et 30 caractères.';
+                    }
                 }
             }
 
@@ -347,7 +380,7 @@ class UserController extends Controller
             }
 
             // Bio
-            if(isset($_POST['biography']) && !empty($_POST['biography'])) {
+            if (isset($_POST['biography']) && !empty($_POST['biography'])) {
                 $_POST['biography'] = filter_var($_POST['biography'], FILTER_SANITIZE_STRING);
                 if (!preg_match('/^.{0,300}$/', $_POST['biography'])) {
                     $this->errors['biography'] = 'La biographie ne peut contenir plus de 300 caractères.';

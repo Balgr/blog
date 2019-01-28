@@ -51,26 +51,31 @@ class PostController extends Controller
     public function showListPostsAction() {
         UserController::whenCurrentUserAccessBackend();
         $posts = $this->getPosts();
-        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "posts" => $posts, "current" => array("posts", "list")));
+        $this->generateToken();
+        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "posts" => $posts, "current" => array("posts", "list"), "csrf" => $this->csrf));
     }
 
     public function showPostsTrashedAction() {
         UserController::whenCurrentUserAccessBackend();
         $posts = $this->getPosts(Post::POST_STATUS_TRASH);
-        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "posts" => $posts, "current" => array("posts", "trash")));
+        $this->generateToken();
+        echo $this->twig->render("backend/posts/index.html.twig", array("currentUser" => $this->currentUser, "errors" => $this->errors, "posts" => $posts, "current" => array("posts", "trash"), "csrf" => $this->csrf));
     }
 
     public function createPostAction() {
         UserController::whenCurrentUserAccessBackend();
         if($_SERVER['REQUEST_METHOD'] != 'POST') {
-            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath, "current" => array("posts", "add")));
+            $this->generateToken();
+            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath, "current" => array("posts", "add"), "csrf" => $this->csrf));
         }
         else {
+            $this->checkCSRF();
             if(empty($this->errors)) {
                 $this->addPost($_POST);
                 header('Location: /backend/posts/');
             }
-            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath, "errors" => $this->errors, "current" => array("posts", "add")));
+            $this->generateToken();
+            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "imgPath" => $this->uploadPath, "errors" => $this->errors, "current" => array("posts", "add"), "csrf" => $this->csrf));
         }
     }
     private function addPost($data) {
@@ -87,6 +92,7 @@ class PostController extends Controller
 
     public function editPostAction($id) {
         UserController::whenCurrentUserAccessBackend();
+
         $post = new Post($this->model()->getSingle($id));
         if(!$post->isValid()) {
             $this->errors['undefined'] = "Le post #$id n'existe pas";
@@ -97,15 +103,18 @@ class PostController extends Controller
 
         if($_SERVER['REQUEST_METHOD'] == 'GET') {
             if($post->isValid()) {
-                echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath, "current" => array("posts", "list")));
+                $this->generateToken();
+                echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath, "current" => array("posts", "list"), "csrf" => $this->csrf));
             }
         }
         else if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->checkCSRF();
             if(empty($this->errors)) {
                 $this->editPost($_POST, $id);
                 header('Location: /backend/posts/');
             }
-            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath, "errors" => $this->errors, "current" => array("posts", "list")));
+            $this->generateToken();
+            echo $this->twig->render("backend/posts/detail.html.twig", array("currentUser" => $this->currentUser, "post" => $post, "imgPath" => $this->uploadPath, "errors" => $this->errors, "current" => array("posts", "list"), "csrf" => $this->csrf));
         }
     }
 
@@ -128,7 +137,11 @@ class PostController extends Controller
 
     public function deletePostAction($id) {
         UserController::whenCurrentUserAccessBackend();
-        if($this->deletePost($id)) {
+        if(!$this->checkCSRF()) {
+            $this->showListPostsAction();
+        }
+
+        else if($this->checkCSRF() && $this->deletePost($id)) {
             header('Location: /backend/posts');
         }
     }
@@ -149,7 +162,11 @@ class PostController extends Controller
 
     public function trashPostAction($id) {
         UserController::whenCurrentUserAccessBackend();
-        if($this->trash($id)) {
+        if(!$this->checkCSRF()) {
+            $this->showListPostsAction();
+        }
+
+        else if($this->trash($id)) {
             header('Location: /backend/posts');
         };
     }
@@ -160,9 +177,14 @@ class PostController extends Controller
 
     public function publishPostAction($id) {
         UserController::whenCurrentUserAccessBackend();
-        if($this->publish($id)) {
+        if(!$this->checkCSRF()) {
+            $this->showListPostsAction();
+        }
+
+        else if($this->publish($id)) {
             header('Location: /backend/posts');
         }
+
     }
 
     public function publish($id) {
@@ -211,10 +233,11 @@ class PostController extends Controller
             // Decodes the Post content in HTML for rendering
             $post->setContent(html_entity_decode($post->content()));
 
-            echo $this->twig->render("frontend/posts/blog-details-2.html.twig", array("post" => $post, "currentUser" => $this->currentUser, "errors" => $errors));
+            $this->generateToken();
+            echo $this->twig->render("frontend/posts/blog-details-2.html.twig", array("post" => $post, "currentUser" => $this->currentUser, "errors" => $errors, "csrf" => $this->csrf));
         }
         else {
-            throw new \Exception('Le post spécifié n\'existe pas.');
+            header('Location: /not_found');
         }
     }
 

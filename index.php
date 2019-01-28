@@ -60,12 +60,11 @@ try {
     $router->post('/backend/posts/trash', 'Post#showPostsTrashedAction');
     $router->get('/backend/posts/add', 'Post#createPostAction');
     $router->post('/backend/posts/add', 'Post#createPostAction');
-    $router->get('/backend/posts/edit/:id', 'Post#editPostAction');
-    $router->post('/backend/posts/edit/:id', 'Post#editPostAction');
-    $router->get('/backend/posts/trash/:id', 'Post#trashPostAction');
-    $router->get('/backend/posts/delete/:id', 'Post#deletePostAction');
-    $router->post('/backend/posts/delete/:id', 'Post#deletePostAction');
-    $router->get('/backend/posts/publish/:id', 'Post#publishPostAction');
+    $router->get('/backend/posts/edit/:id', 'Post#editPostAction')->with('id', '[0-9]+');
+    $router->post('/backend/posts/edit/:id', 'Post#editPostAction')->with('id', '[0-9]+');
+    $router->post('/backend/posts/trash/:id', 'Post#trashPostAction')->with('id', '[0-9]+');
+    $router->post('/backend/posts/delete/:id', 'Post#deletePostAction')->with('id', '[0-9]+');
+    $router->post('/backend/posts/publish/:id', 'Post#publishPostAction')->with('id', '[0-9]+');
 
     $router->get('/backend/users', 'User#showListUsersAction');
     $router->post('/backend/users', 'User#showListUsersAction');
@@ -73,15 +72,14 @@ try {
     $router->post('/backend/users/add', 'User#createUserAction');
     $router->get('/backend/users/edit/:id', 'User#editUserAction')->with('id', '[0-9]+');
     $router->post('/backend/users/edit/:id', 'User#editUserAction')->with('id', '[0-9]+');
-    $router->get('/backend/users/delete/:id', 'User#deleteUserAction')->with('id', '[0-9]+');
     $router->post('/backend/users/delete/:id', 'User#deleteUserAction')->with('id', '[0-9]+');
 
     $router->get('/backend/comments', 'Comment#showListCommentsAction');
     $router->get('/backend/comments/trash', 'Comment#showCommentsTrashedAction');
     $router->get('/backend/comments/moderate', 'Comment#showCommentsToModerateAction');
-    $router->get('/backend/comments/publish/:id', 'Comment#publishCommentAction')->with('id', '[0-9]+');
-    $router->get('/backend/comments/trash/:id', 'Comment#trashCommentAction')->with('id', '[0-9]+');
-    $router->get('/backend/comments/delete/:id', 'Comment#deleteCommentAction')->with('id', '[0-9]+');
+    $router->post('/backend/comments/publish/:id', 'Comment#publishCommentAction')->with('id', '[0-9]+');
+    $router->post('/backend/comments/trash/:id', 'Comment#trashCommentAction')->with('id', '[0-9]+');
+    $router->post('/backend/comments/delete/:id', 'Comment#deleteCommentAction')->with('id', '[0-9]+');
 
     $router->get('/sitemap.xml', 'Sitemap#generateSitemapAction');
 

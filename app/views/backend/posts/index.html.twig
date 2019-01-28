@@ -45,9 +45,20 @@
                                     {% elseif post.status == constant('Blog\\app\\Entity\\Post::POST_STATUS_TRASH') %}Corbeille
                                     {% endif %}
                                 </td>
-                                <td><a href="/backend/posts/trash/{{ post.id }}"><em class="fa fa-trash"></em></a>
-                                <a href="/backend/posts/delete/{{ post.id }}"><em class="fa fa-minus-circle"></em></a>
-                                <a href="/backend/posts/publish/{{ post.id }}"><em class="fa fa-angle-right"></em></a></td>
+                                <td>
+                                    <form method="POST" action="/backend/posts/trash/{{ post.id }}" id="form_trash_{{ post.id }}">
+                                        <input type="hidden" name="csrf" value="{{ csrf }}"/>
+                                        <a href="javascript:{}" onclick="document.getElementById('form_trash_{{ post.id }}').submit(); return false;"><em class="fa fa-trash"></em></a>
+                                    </form>
+                                    <form method="POST" action="/backend/posts/delete/{{ post.id }}" id="form_delete_{{ post.id }}">
+                                        <input type="hidden" name="csrf" value="{{ csrf }}"/>
+                                        <a href="javascript:{}" onclick="document.getElementById('form_delete_{{ post.id }}').submit(); return false;"><em class="fa fa-minus-circle"></em></a>
+                                    </form>
+                                    <form method="POST" action="/backend/posts/publish/{{ post.id }}" id="form_publish_{{ post.id }}">
+                                        <input type="hidden" name="csrf" value="{{ csrf }}"/>
+                                        <a href="javascript:{}" onclick="document.getElementById('form_publish_{{ post.id }}').submit(); return false;"><em class="fa fa-angle-right"></em></a>
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                             </tbody>

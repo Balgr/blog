@@ -42,7 +42,12 @@
                                         {% elseif user.category == constant('Blog\\app\\Entity\\User::STATUS_MEMBER') %}Membre
                                         {% endif %}
                                     </td>
-                                    <td><a href="/backend/users/delete/{{ user.id }}"><em class="fa fa-minus-circle"></em></a></td>
+                                    <td>
+                                        <form method="POST" action="/backend/users/delete/{{ user.id }}" id="form_delete">
+                                            <input type="hidden" name="csrf" value="{{ csrf }}"/>
+                                            <a href="javascript:{}" onclick="document.getElementById('form_delete').submit(); return false;"><em class="fa fa-minus-circle"></em></a>
+                                        </form>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                                 </tbody>
